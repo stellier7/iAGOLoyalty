@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { CARD_COOKIE, isCardToken } from "@/domain/card-token";
-import { getDataMode } from "@/lib/config";
+import { accountMode, getDataMode } from "@/lib/config";
 import { updateSupabaseSession } from "@/lib/supabase/proxy";
 
 function rememberCard(request: NextRequest, response: NextResponse) {
@@ -27,7 +27,7 @@ export async function proxy(request: NextRequest) {
     return rememberCard(request, await updateSupabaseSession(request));
   }
 
-  if (mode === "local" && protectedPath && !request.cookies.get("iago_session")) {
+  if (accountMode(mode) === "database" && protectedPath && !request.cookies.get("iago_session")) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
     redirectUrl.searchParams.set("next", pathname);

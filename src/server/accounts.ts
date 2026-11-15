@@ -1,10 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 import { hashPassword, verifyPassword } from "@/domain/password";
-import { getDataMode } from "@/lib/config";
+import { accountMode } from "@/lib/config";
 import { getAdminDb } from "@/lib/db";
 
 export async function platformHasSuperAdmin(): Promise<boolean | null> {
-  if (getDataMode() === "local") {
+  const mode = accountMode();
+  if (mode === "database") {
     try {
       const rows = await getAdminDb()<{ exists: boolean }[]>`
         select exists(
@@ -17,7 +18,7 @@ export async function platformHasSuperAdmin(): Promise<boolean | null> {
     }
   }
 
-  if (getDataMode() !== "supabase" || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (mode !== "supabase" || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return null;
   }
 

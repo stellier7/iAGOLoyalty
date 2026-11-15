@@ -21,7 +21,7 @@ export default async function HomePage() {
         Loyalty, kept separate for every business.
       </h1>
       <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">
-        iAGO Loyalty is a multi-tenant platform for cafés, salons, shops, and our own perfumery. Each business has its own customers, team, stamp card or points program, and ledger.
+        iAGO Loyalty is a multi-tenant platform for cafés, salons, shops, and Perfumes y Belleza. Each business has its own customers, team, stamp card or points program, and ledger.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
         <Link href="/login" className={buttonVariants()}>
@@ -35,7 +35,7 @@ export default async function HomePage() {
       </div>
       {mode === "unconfigured" ? (
         <p className="mt-8 max-w-xl text-sm leading-6 text-muted-foreground">
-          Add Supabase environment variables, or local database settings from `.env.example`, before signing in. No credentials are included in the repository.
+          Sign-in is not ready on this deployment yet. Staff and the platform admin use the sign-in page once the database and session secret are set.
         </p>
       ) : null}
       <dl className="mt-14 grid gap-6 border-t pt-8 sm:grid-cols-3">

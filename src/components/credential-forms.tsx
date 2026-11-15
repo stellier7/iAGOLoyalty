@@ -24,7 +24,14 @@ export function SetupForm() {
     <form action={action} className="grid gap-4">
       <TextField label="Setup token" name="setupToken" type="password" autoComplete="off" required />
       <TextField label="Your name" name="fullName" autoComplete="name" required />
-      <TextField label="Email" name="email" type="email" autoComplete="email" required />
+      <TextField
+        label="Email"
+        name="email"
+        type="email"
+        autoComplete="email"
+        defaultValue="santiago.t@iagodigital.com"
+        required
+      />
       <TextField label="Password" name="password" type="password" autoComplete="new-password" required />
       <p className="text-sm text-muted-foreground">Use at least 10 characters.</p>
       <FormError message={state.error} />

@@ -19,7 +19,7 @@ export default async function BusinessesPage() {
       </div>
       {businesses.length === 0 ? (
         <p className="mt-6 max-w-lg text-sm leading-6 text-muted-foreground">
-          No businesses yet. The first one can be the perfumery, created here as a normal tenant.
+          No businesses yet. The first one can be Perfumes y Belleza, created here as a normal tenant.
         </p>
       ) : (
         <table className="mt-6 w-full text-left text-sm">

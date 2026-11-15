@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { businessDraftSchema } from "@/domain/business-draft";
 import { isBusinessSlug, slugifyBusinessName } from "@/domain/slug";
 import { EMPLOYEE_PERMISSIONS, isBusinessRole, type PermissionMap } from "@/domain/permissions";
-import { getDataMode } from "@/lib/config";
+import { accountMode, getDataMode } from "@/lib/config";
 import { toActionError } from "@/lib/errors";
 import { clearSession, safeNextPath, writeBusinessId, writeSession } from "@/lib/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -39,21 +39,30 @@ export async function loginAction(_state: ActionState, formData: FormData): Prom
   }
 
   try {
-    const mode = getDataMode();
-    if (mode === "local") {
-      const userId = await verifyLocalLogin(email, password);
-      if (!userId) {
-        return { error: "Those credentials do not match an account." };
+    const mode = accountMode();
+    switch (mode) {
+      case "database": {
+        const userId = await verifyLocalLogin(email, password);
+        if (!userId) {
+          return { error: "Those credentials do not match an account." };
+        }
+        await writeSession(userId);
+        break;
       }
-      await writeSession(userId);
-    } else if (mode === "supabase") {
-      const supabase = await createSupabaseServerClient();
-      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-      if (error) {
-        return { error: "Those credentials do not match an account." };
+      case "supabase": {
+        const supabase = await createSupabaseServerClient();
+        const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+        if (error) {
+          return { error: "Those credentials do not match an account." };
+        }
+        break;
       }
-    } else {
-      return { error: "Authentication is not configured yet." };
+      case "unconfigured":
+        return { error: "Authentication is not configured yet." };
+      default: {
+        const unknown: never = mode;
+        return { error: unknown };
+      }
     }
   } catch (error) {
     return { error: toActionError(error) };
@@ -78,21 +87,30 @@ export async function setupAction(_state: ActionState, formData: FormData): Prom
   }
 
   try {
-    const mode = getDataMode();
-    if (mode === "local") {
-      const userId = await createLocalUser({ email, password, fullName });
-      await promoteFirstLocalSuperAdmin(userId);
-      await writeSession(userId);
-    } else if (mode === "supabase") {
-      const userId = await createSupabaseUser({ email, password, fullName, superAdmin: true });
-      const supabase = await createSupabaseServerClient();
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        return { error: "The admin account was created. Sign in with that email." };
+    const mode = accountMode();
+    switch (mode) {
+      case "database": {
+        const userId = await createLocalUser({ email, password, fullName });
+        await promoteFirstLocalSuperAdmin(userId);
+        await writeSession(userId);
+        break;
       }
-      void userId;
-    } else {
-      return { error: "Add Supabase or local database settings before setup." };
+      case "supabase": {
+        const userId = await createSupabaseUser({ email, password, fullName, superAdmin: true });
+        const supabase = await createSupabaseServerClient();
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          return { error: "The admin account was created. Sign in with that email." };
+        }
+        void userId;
+        break;
+      }
+      case "unconfigured":
+        return { error: "Add Supabase or local database settings before setup." };
+      default: {
+        const unknown: never = mode;
+        return { error: unknown };
+      }
     }
   } catch (error) {
     return { error: toActionError(error) };
@@ -115,29 +133,37 @@ export async function acceptInvitationAction(
       return { error: "This invitation is no longer available." };
     }
 
-    const mode = getDataMode();
+    const mode = accountMode();
     let userId = await currentUserId();
     if (!userId) {
       if (fullName.length < 2) {
         return { error: "Enter your name to create the account." };
       }
-      if (mode === "local") {
-        userId = await createLocalUser({ email: preview.email, password, fullName });
-        await writeSession(userId);
-      } else if (mode === "supabase") {
-        await createSupabaseUser({ email: preview.email, password, fullName });
-        const supabase = await createSupabaseServerClient();
-        const { error } = await supabase.auth.signInWithPassword({
-          email: preview.email,
-          password,
-        });
-        if (error) {
-          return { error: "The account was created. Sign in and open the invitation again." };
+      switch (mode) {
+        case "database":
+          userId = await createLocalUser({ email: preview.email, password, fullName });
+          await writeSession(userId);
+          break;
+        case "supabase": {
+          await createSupabaseUser({ email: preview.email, password, fullName });
+          const supabase = await createSupabaseServerClient();
+          const { error } = await supabase.auth.signInWithPassword({
+            email: preview.email,
+            password,
+          });
+          if (error) {
+            return { error: "The account was created. Sign in and open the invitation again." };
+          }
+          const { data } = await supabase.auth.getUser();
+          userId = data.user?.id ?? null;
+          break;
         }
-        const { data } = await supabase.auth.getUser();
-        userId = data.user?.id ?? null;
-      } else {
-        return { error: "Authentication is not configured yet." };
+        case "unconfigured":
+          return { error: "Authentication is not configured yet." };
+        default: {
+          const unknown: never = mode;
+          return { error: unknown };
+        }
       }
     }
 

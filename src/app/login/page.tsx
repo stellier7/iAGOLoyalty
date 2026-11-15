@@ -24,7 +24,7 @@ export default async function LoginPage({
       </Link>
       <h1 className="mt-8 font-heading text-4xl">Sign in</h1>
       <p className="mt-3 text-sm leading-6 text-muted-foreground">
-        Staff and platform admins sign in here. Customer loyalty cards are a separate, later flow.
+        Platform admins and business staff sign in here. Customers open the link on their card instead.
       </p>
       <div className="mt-8">
         <LoginForm nextPath={nextPath} />

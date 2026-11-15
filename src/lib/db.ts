@@ -3,8 +3,15 @@ import postgres from "postgres";
 let appDb: ReturnType<typeof postgres> | undefined;
 let adminDb: ReturnType<typeof postgres> | undefined;
 
+function appDatabaseUrl() {
+  if (process.env.NODE_ENV !== "production" && process.env.LOCAL_DATABASE_URL) {
+    return process.env.LOCAL_DATABASE_URL;
+  }
+  return process.env.DATABASE_URL ?? process.env.LOCAL_DATABASE_URL ?? null;
+}
+
 export function getAppDb() {
-  const url = process.env.LOCAL_DATABASE_URL;
+  const url = appDatabaseUrl();
   if (!url) {
     throw new Error("LOCAL_DATABASE_URL is not set");
   }
@@ -13,12 +20,16 @@ export function getAppDb() {
 }
 
 export function getAdminDb() {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("Local admin database access is disabled in production.");
-  }
-  const url = process.env.LOCAL_DATABASE_ADMIN_URL;
+  const url =
+    process.env.NODE_ENV === "production"
+      ? process.env.DATABASE_URL
+      : process.env.LOCAL_DATABASE_ADMIN_URL;
   if (!url) {
-    throw new Error("LOCAL_DATABASE_ADMIN_URL is not set");
+    throw new Error(
+      process.env.NODE_ENV === "production"
+        ? "DATABASE_URL is not set"
+        : "LOCAL_DATABASE_ADMIN_URL is not set",
+    );
   }
   adminDb ??= postgres(url, { max: 2, prepare: false });
   return adminDb;

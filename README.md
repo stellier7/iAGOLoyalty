@@ -14,7 +14,13 @@ Next.js, TypeScript, Tailwind, shadcn/ui, and PostgreSQL with the same schema Su
 4. Run `npm test` and `npm run dev`.
 5. Open `/setup`, enter the setup token, and create the first super admin.
 
-The local database password in `.env.example` is a development default created by the prepare script. It is not a production secret. Local sessions are refused when `NODE_ENV=production`.
+The local database password in `.env.example` is a development default created by the prepare script. It is not a production secret.
+
+## Where to sign in
+
+GitHub stores the code. It is not the admin. Open the running site and use `/login`. The first platform admin is created at `/setup` with the setup token, a name, and a password of at least 10 characters. After that admin exists, the same email and password sign in at `/login`.
+
+A Vercel preview has no database until Supabase environment variables are set, so its sign-in page cannot accept an account. The hosted app uses its own Postgres database and the same `/login` page. `santiago.t@iagodigital.com` is the email for that first admin. The password is the one chosen on `/setup`. It is not stored in the repository.
 
 Hosted Supabase replaces local mode when `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set. Apply `supabase/migrations` to that project. Do not run `supabase/local/prelude.sql` there. The service role key stays on the server. Apple, Google, email, WhatsApp, and SMS credentials are not part of this phase.
 

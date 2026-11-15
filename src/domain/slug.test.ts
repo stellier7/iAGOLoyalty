@@ -6,6 +6,10 @@ test("slugifyBusinessName lowercases and hyphenates a business name", () => {
   assert.equal(slugifyBusinessName("iAGO Perfumery"), "iago-perfumery");
 });
 
+test("slugifyBusinessName builds the Perfumes y Belleza tenant slug", () => {
+  assert.equal(slugifyBusinessName("Perfumes y Belleza"), "perfumes-y-belleza");
+});
+
 test("slugifyBusinessName strips accents and punctuation", () => {
   assert.equal(slugifyBusinessName("Café Ñoño & Co."), "cafe-nono-co");
 });
