@@ -28,6 +28,8 @@ sudo -u postgres psql -d iago_loyalty -v ON_ERROR_STOP=1 -c 'drop schema if exis
 sudo -u postgres psql -d iago_loyalty -v ON_ERROR_STOP=1 -c 'drop schema if exists auth cascade'
 sudo -u postgres psql -d iago_loyalty -v ON_ERROR_STOP=1 -c 'create schema public'
 sudo -u postgres psql -d iago_loyalty -v ON_ERROR_STOP=1 -f supabase/local/prelude.sql
-sudo -u postgres psql -d iago_loyalty -v ON_ERROR_STOP=1 -f supabase/migrations/20261115000000_foundation.sql
+for migration in supabase/migrations/*.sql; do
+  sudo -u postgres psql -d iago_loyalty -v ON_ERROR_STOP=1 -f "$migration"
+done
 
 echo "Local database iago_loyalty is ready."

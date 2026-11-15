@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { businessStatusLabel, roleLabel } from "@/domain/labels";
+import { QrCode } from "@/components/qr-code";
+import { publicOrigin } from "@/lib/public-request";
+import { loyaltyCounts, listPrograms } from "@/server/loyalty";
 import { listInvitations, listTeam } from "@/server/queries";
 import { canManageTeam, requireWorkspace } from "@/server/workspace";
 
@@ -24,13 +27,20 @@ export default async function OverviewPage() {
     : [];
   const pendingInvites = invitations.filter((invitation) => !invitation.acceptedAt).length;
   const activeMembers = team.filter((member) => member.status === "active").length;
+  const counts = await loyaltyCounts(workspace.userId, workspace.business.id);
+  const programs = await listPrograms(workspace.userId, workspace.business.id);
+  const origin = await publicOrigin();
+  const joinUrl = `${origin}/join/${workspace.business.slug}`;
 
   return (
     <div className="grid gap-8">
       <section className="grid gap-4 sm:grid-cols-3">
+        <Metric label="Customers" value={String(counts.customers)} />
+        <Metric label="Stamps issued" value={String(counts.stampsIssued)} />
+        <Metric label="Points issued" value={String(counts.pointsIssued)} />
+        <Metric label="Rewards redeemed" value={String(counts.redemptions)} />
         <Metric label="Active team members" value={String(activeMembers)} />
         <Metric label="Pending invitations" value={canManageTeam(workspace.membership) ? String(pendingInvites) : "Hidden"} />
-        <Metric label="Plan" value={workspace.subscription?.planCode ?? "pilot"} />
       </section>
       <section className="max-w-2xl">
         <h2 className="font-heading text-3xl">{workspace.business.name}</h2>
@@ -38,18 +48,20 @@ export default async function OverviewPage() {
           You are signed in as {roleLabel(workspace.membership.role).toLowerCase()}. The business is {businessStatusLabel(workspace.business.status).toLowerCase()}, uses {workspace.business.currency}, and keeps customer-facing copy in {workspace.business.locale === "es" ? "Spanish" : "English"}.
         </p>
       </section>
-      <section className="grid gap-3 border-t pt-6 sm:grid-cols-2">
+      <section className="grid gap-4 border-t pt-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
+        {programs.length > 0 ? <QrCode value={joinUrl} label={`Enrollment QR for ${workspace.business.name}`} /> : <div />}
         <article>
-          <h3 className="text-sm font-medium">Loyalty programs</h3>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Stamp cards and points programs are not in this release. Balances will be posted through a ledger, not edited by hand.
-          </p>
-        </article>
-        <article>
-          <h3 className="text-sm font-medium">Stamp QR and NFC</h3>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            A stamp will be collectible from a QR code or an NFC tag. Both will open the same short-lived HTTPS link, so the phone does not need a separate app.
-          </p>
+          <h3 className="text-sm font-medium">Enrollment</h3>
+          {programs.length > 0 ? (
+            <p className="mt-2 break-all text-sm leading-6">{joinUrl}</p>
+          ) : (
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Create a program before sharing an enrollment link. Stamp QR codes and NFC tags use the same stamp address.
+            </p>
+          )}
+          <Link href="/app/programs" className="mt-3 inline-block text-sm underline">
+            Open programs
+          </Link>
         </article>
       </section>
       {workspace.profile.platformRole === "super_admin" ? (

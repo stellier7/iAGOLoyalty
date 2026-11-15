@@ -1,10 +1,28 @@
 import { AppFrame } from "@/components/app-frame";
 import { businessStatusLabel } from "@/domain/labels";
+import { hasPermission, type EmployeePermission } from "@/domain/permissions";
 import { canManageTeam, requireWorkspace } from "@/server/workspace";
 
 export default async function BusinessLayout({ children }: { children: React.ReactNode }) {
   const workspace = await requireWorkspace();
+  const allow = (permission: EmployeePermission) =>
+    workspace.membership ? hasPermission(workspace.membership.role, workspace.membership.permissions, permission) : false;
   const items = [{ href: "/app", label: "Overview" }];
+  if (allow("scan")) {
+    items.push({ href: "/app/scan", label: "Scan" });
+  }
+  if (allow("view_customers")) {
+    items.push({ href: "/app/customers", label: "Customers" });
+  }
+  if (workspace.membership) {
+    items.push({ href: "/app/transactions", label: "Transactions" });
+  }
+  if (allow("manage_settings") || allow("issue_stamps")) {
+    items.push({ href: "/app/programs", label: "Programs" });
+  }
+  if (allow("manage_settings")) {
+    items.push({ href: "/app/rewards", label: "Rewards" });
+  }
   if (canManageTeam(workspace.membership)) {
     items.push({ href: "/app/team", label: "Team" });
   }

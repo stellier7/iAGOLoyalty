@@ -24,6 +24,13 @@ export function getAdminDb() {
   return adminDb;
 }
 
+export async function withAnon<T>(run: (tx: postgres.TransactionSql) => Promise<T>): Promise<T> {
+  return getAppDb().begin(async (tx) => {
+    await tx.unsafe("set local role anon");
+    return run(tx);
+  });
+}
+
 export async function withUser<T>(
   userId: string,
   run: (tx: postgres.TransactionSql) => Promise<T>,

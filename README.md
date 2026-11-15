@@ -1,6 +1,6 @@
 # iAGO Loyalty
 
-Multi-tenant loyalty platform for iAGO Digital. Phase 1 is the foundation: staff authentication, businesses, roles, invitations, and tenant isolation. Loyalty cards, stamp QR codes, NFC stamps, and wallets are later phases and are not simulated here.
+Multi-tenant loyalty platform for iAGO Digital. Businesses, staff roles, enrollment, stamp cards, points, rewards, and an append-only ledger are in place. Apple Wallet, Google Wallet, campaigns, and billing are later phases and are not simulated here.
 
 ## Stack
 
@@ -22,6 +22,6 @@ Hosted Supabase replaces local mode when `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PU
 
 Business data is scoped by `business_id`. Authenticated reads go through row level security. Writes go through database functions that check the caller again. `npm test` creates two businesses and proves one owner cannot read or invite into the other, and that suspending a business blocks owner writes.
 
-## Stamp collection, later
+## Stamp collection
 
-A stamp will be collectable in three ways, all posting the same ledger operation: an employee scans the customer QR, the customer scans a stamp QR, or the customer taps an NFC tag. The NFC tag stores the same HTTPS URL as the QR so iPhone and Android open it without a native app. Static codes are rate-limited. Rotating codes expire quickly. That behavior is not built yet.
+A stamp is posted in three ways, all through the same ledger operation: an employee scans the customer card, the customer opens a stamp QR, or the customer taps an NFC tag. The NFC tag stores the same HTTPS URL as the QR, with `?via=nfc`, so iPhone and Android open it without a native app. Static codes have a cooldown. Rotating codes expire in 60 seconds and work once. A second staff stamp within 15 seconds asks for confirmation. Balances cannot be edited outside the ledger.

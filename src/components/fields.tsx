@@ -8,6 +8,7 @@ export function TextField({
   defaultValue,
   required,
   autoComplete,
+  step,
   value,
   onChange,
 }: {
@@ -17,6 +18,7 @@ export function TextField({
   defaultValue?: string;
   required?: boolean;
   autoComplete?: string;
+  step?: string;
   value?: string;
   onChange?: (value: string) => void;
 }) {
@@ -30,6 +32,7 @@ export function TextField({
         type={type}
         required={required}
         autoComplete={autoComplete}
+        step={step}
         defaultValue={controlled ? undefined : defaultValue}
         value={controlled ? value : undefined}
         onChange={onChange ? (event) => onChange(event.target.value) : undefined}

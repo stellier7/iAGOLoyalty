@@ -21,7 +21,7 @@ export default async function HomePage() {
         Loyalty, kept separate for every business.
       </h1>
       <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">
-        iAGO Loyalty is a multi-tenant platform for cafés, salons, shops, and our own perfumery. Each business has its own customers, team, and program. This release is the foundation: accounts, businesses, and tenant isolation.
+        iAGO Loyalty is a multi-tenant platform for cafés, salons, shops, and our own perfumery. Each business has its own customers, team, stamp card or points program, and ledger.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
         <Link href="/login" className={buttonVariants()}>
@@ -52,9 +52,9 @@ export default async function HomePage() {
           </dd>
         </div>
         <div>
-          <dt className="text-sm font-medium">Cards come next</dt>
+          <dt className="text-sm font-medium">Stamps, points, and one ledger</dt>
           <dd className="mt-2 text-sm leading-6 text-muted-foreground">
-            Enrollment, points, stamp QR codes, and NFC stamp tags are the next build. They are not simulated here.
+            Customers enroll with their own card. Staff record visits. A stamp QR and an NFC tag open the same link.
           </dd>
         </div>
       </dl>
