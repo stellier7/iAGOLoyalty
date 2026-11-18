@@ -6,9 +6,12 @@ Static blueprints for **10 × 10 cm** stickers on a **12" × 17"** sheet, matchi
 
 | File | What it is |
 |------|------------|
-| [sticker-10cm.html](./sticker-10cm.html) | Single sticker blueprint |
-| [sheet-3x3-10cm.html](./sheet-3x3-10cm.html) | **9** stickers (3 columns × 3 rows) |
-| [sheet-3x4-10cm.html](./sheet-3x4-10cm.html) | **12** stickers (3 columns × 4 rows) |
+| [exports/sticker-10cm.pdf](./exports/sticker-10cm.pdf) / [`.jpg`](./exports/sticker-10cm.jpg) | Single sticker (ready to view/print) |
+| [exports/sheet-3x3-10cm.pdf](./exports/sheet-3x3-10cm.pdf) / [`.jpg`](./exports/sheet-3x3-10cm.jpg) | **9** stickers on 12×17" |
+| [exports/sheet-3x4-10cm.pdf](./exports/sheet-3x4-10cm.pdf) / [`.jpg`](./exports/sheet-3x4-10cm.jpg) | **12** stickers on 12×17" |
+| [sticker-10cm.html](./sticker-10cm.html) | Editable single-sticker source |
+| [sheet-3x3-10cm.html](./sheet-3x3-10cm.html) | Editable 3×3 sheet source |
+| [sheet-3x4-10cm.html](./sheet-3x4-10cm.html) | Editable 3×4 sheet source |
 | `assets/qr-placeholder.png` | Fake QR for design / proofing |
 
 ## How many fit?
