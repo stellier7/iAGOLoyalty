@@ -10,6 +10,6 @@ test("Vercel builds the Next.js app instead of publishing the public folder", ()
   };
 
   assert.equal(config.framework, "nextjs");
-  assert.equal(config.buildCommand, "next build");
+  assert.equal(config.buildCommand, "next build && node scripts/migrate.mjs");
   assert.equal(config.outputDirectory, null);
 });
