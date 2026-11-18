@@ -23,6 +23,7 @@ test("production database accounts stay available when Supabase is unset", () =>
 
   process.env.NODE_ENV = "production";
   process.env.DATABASE_URL = "postgres://hosted.example/iago";
+  delete process.env.POSTGRES_URL;
   process.env.SESSION_SECRET = "x".repeat(32);
   delete process.env.NEXT_PUBLIC_SUPABASE_URL;
   delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
