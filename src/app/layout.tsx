@@ -1,36 +1,41 @@
 import type { Metadata } from "next";
-import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://loyalty.iagodigital.com"),
   title: {
     default: "iAGO Loyalty",
     template: "%s · iAGO Loyalty",
   },
   description: "Multi-tenant loyalty programs for independent businesses, by iAGO Digital.",
+  icons: {
+    icon: [
+      { url: "/brand/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.ico", sizes: "256x256" },
+    ],
+    apple: [{ url: "/brand/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
-    >
+    <html lang="en" className="h-full antialiased">
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/syne-latin.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/dm-sans-latin.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="min-h-full font-sans">{children}</body>
     </html>
   );

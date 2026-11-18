@@ -29,7 +29,7 @@ export function SetupForm() {
         name="email"
         type="email"
         autoComplete="email"
-        defaultValue="santiago.t@iagodigital.com"
+        defaultValue="iagodigitalweb@gmail.com"
         required
       />
       <TextField label="Password" name="password" type="password" autoComplete="new-password" required />
