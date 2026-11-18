@@ -5,6 +5,7 @@ import { SetupForm } from "@/components/credential-forms";
 import { platformHasSuperAdmin } from "@/server/accounts";
 
 export const metadata = { title: "Setup" };
+export const dynamic = "force-dynamic";
 
 export default async function SetupPage() {
   const mode = getDataMode();
