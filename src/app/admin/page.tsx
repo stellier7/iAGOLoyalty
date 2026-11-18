@@ -29,9 +29,14 @@ export default async function AdminHomePage() {
         <p className="mt-3 text-sm leading-6 text-muted-foreground">
           Create a business, invite its owner, and suspend the account if it should stop issuing loyalty activity. Subscription rows are manual for the pilot. Billing is not connected.
         </p>
-        <Link href="/admin/businesses/new" className="mt-4 inline-block text-sm underline">
-          Create a business
-        </Link>
+        <div className="mt-4 flex flex-wrap gap-4 text-sm">
+          <Link href="/admin/businesses/new" className="underline">
+            Create a business
+          </Link>
+          <Link href="/admin/destinations" className="underline">
+            Manage QR destinations
+          </Link>
+        </div>
       </section>
     </div>
   );

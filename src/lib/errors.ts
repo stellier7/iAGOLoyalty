@@ -48,6 +48,13 @@ const MESSAGES: Record<string, string> = {
   duplicate_reference: "That external reference was already posted.",
   ledger_immutable: "Ledger entries cannot be edited.",
   balance_locked: "Balances can only change through the ledger.",
+  invalid_destination_url: "Enter a valid http or https destination URL.",
+  invalid_destination_type: "Choose a destination type.",
+  invalid_google_review_url: "Paste a Google Maps or Google review link.",
+  invalid_whatsapp_url: "Paste a WhatsApp link such as https://wa.me/...",
+  invalid_instagram_url: "Paste an Instagram profile or post URL.",
+  invalid_qr_code: "Use letters and numbers only for the permanent QR code.",
+  qr_code_taken: "That permanent QR code is already in use.",
 };
 
 export function isNextRedirect(error: unknown): boolean {

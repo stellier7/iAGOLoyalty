@@ -11,6 +11,7 @@ export function TextField({
   step,
   value,
   onChange,
+  placeholder,
 }: {
   label: string;
   name: string;
@@ -21,6 +22,7 @@ export function TextField({
   step?: string;
   value?: string;
   onChange?: (value: string) => void;
+  placeholder?: string;
 }) {
   const controlled = value !== undefined;
   return (
@@ -33,6 +35,7 @@ export function TextField({
         required={required}
         autoComplete={autoComplete}
         step={step}
+        placeholder={placeholder}
         defaultValue={controlled ? undefined : defaultValue}
         value={controlled ? value : undefined}
         onChange={onChange ? (event) => onChange(event.target.value) : undefined}
