@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Google Review sheet — 3×3 @ 10cm</title>
+    <link rel="stylesheet" href="sticker.css" />
+    <style>
+      @page {
+        size: 12in 17in;
+        margin: 0;
+      }
+
+      :root {
+        --sheet-w: 12in;
+        --sheet-h: 17in;
+        --cols: 3;
+        --rows: 3;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #cfd5de;
+      }
+
+      .sheet-meta {
+        max-width: 12in;
+        margin: 1rem auto 0.5rem;
+        padding: 0 1rem;
+        font: 600 0.95rem/1.4 "Segoe UI", sans-serif;
+        color: #222;
+      }
+
+      .sheet {
+        width: var(--sheet-w);
+        height: var(--sheet-h);
+        margin: 0 auto 2rem;
+        background: #fff;
+        display: grid;
+        grid-template-columns: repeat(var(--cols), 10cm);
+        grid-template-rows: repeat(var(--rows), 10cm);
+        justify-content: center;
+        align-content: center;
+        column-gap: 0.12cm;
+        row-gap: 0.12cm;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+      }
+
+      @media print {
+        html,
+        body {
+          background: #fff;
+        }
+
+        .sheet-meta {
+          display: none;
+        }
+
+        .sheet {
+          margin: 0;
+          box-shadow: none;
+          width: 12in;
+          height: 17in;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <p class="sheet-meta">3×3 sheet (9 stickers) · 12" × 17" · stickers 10×10 cm · placeholder QR · print at 100% / actual size</p>
+    <main class="sheet" aria-label="3×3 sheet (9 stickers)">
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <header class="sticker__hero">
+    <div class="sticker__hero-row">
+      <div class="sticker__g-wrap">
+        <img src="assets/google-g.svg" alt="Google" />
+      </div>
+      <div class="sticker__copy">
+        <p class="sticker__copy-top">Déjanos una reseña</p>
+        <p class="sticker__copy-bottom">en Google</p>
+      </div>
+    </div>
+    <div class="sticker__stars" aria-hidden="true">
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+    </div>
+    <svg class="sticker__wave" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#ffffff" d="M0 18 V9 Q50 0 100 9 V18 Z" />
+    </svg>
+  </header>
+  <div class="sticker__body">
+    <div class="sticker__actions">
+      <div class="sticker__action">
+        <p class="sticker__action-label">Acerca tu teléfono</p>
+        <img class="sticker__nfc-icon" src="assets/nfc-tap.svg" alt="" />
+      </div>
+      <div class="sticker__divider" aria-hidden="true"></div>
+      <div class="sticker__action">
+        <p class="sticker__action-label">Escanear código QR</p>
+        <img class="sticker__qr" src="assets/qr-placeholder.png" alt="Código QR de ejemplo" />
+      </div>
+    </div>
+    <footer class="sticker__footer">
+      <p class="sticker__footer-text">Desarrollado por</p>
+      <img class="sticker__footer-logo" src="assets/iago-digital-logo.jpg" alt="iAGO Digital" />
+    </footer>
+  </div>
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <header class="sticker__hero">
+    <div class="sticker__hero-row">
+      <div class="sticker__g-wrap">
+        <img src="assets/google-g.svg" alt="Google" />
+      </div>
+      <div class="sticker__copy">
+        <p class="sticker__copy-top">Déjanos una reseña</p>
+        <p class="sticker__copy-bottom">en Google</p>
+      </div>
+    </div>
+    <div class="sticker__stars" aria-hidden="true">
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+    </div>
+    <svg class="sticker__wave" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#ffffff" d="M0 18 V9 Q50 0 100 9 V18 Z" />
+    </svg>
+  </header>
+  <div class="sticker__body">
+    <div class="sticker__actions">
+      <div class="sticker__action">
+        <p class="sticker__action-label">Acerca tu teléfono</p>
+        <img class="sticker__nfc-icon" src="assets/nfc-tap.svg" alt="" />
+      </div>
+      <div class="sticker__divider" aria-hidden="true"></div>
+      <div class="sticker__action">
+        <p class="sticker__action-label">Escanear código QR</p>
+        <img class="sticker__qr" src="assets/qr-placeholder.png" alt="Código QR de ejemplo" />
+      </div>
+    </div>
+    <footer class="sticker__footer">
+      <p class="sticker__footer-text">Desarrollado por</p>
+      <img class="sticker__footer-logo" src="assets/iago-digital-logo.jpg" alt="iAGO Digital" />
+    </footer>
+  </div>
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <header class="sticker__hero">
+    <div class="sticker__hero-row">
+      <div class="sticker__g-wrap">
+        <img src="assets/google-g.svg" alt="Google" />
+      </div>
+      <div class="sticker__copy">
+        <p class="sticker__copy-top">Déjanos una reseña</p>
+        <p class="sticker__copy-bottom">en Google</p>
+      </div>
+    </div>
+    <div class="sticker__stars" aria-hidden="true">
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+    </div>
+    <svg class="sticker__wave" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#ffffff" d="M0 18 V9 Q50 0 100 9 V18 Z" />
+    </svg>
+  </header>
+  <div class="sticker__body">
+    <div class="sticker__actions">
+      <div class="sticker__action">
+        <p class="sticker__action-label">Acerca tu teléfono</p>
+        <img class="sticker__nfc-icon" src="assets/nfc-tap.svg" alt="" />
+      </div>
+      <div class="sticker__divider" aria-hidden="true"></div>
+      <div class="sticker__action">
+        <p class="sticker__action-label">Escanear código QR</p>
+        <img class="sticker__qr" src="assets/qr-placeholder.png" alt="Código QR de ejemplo" />
+      </div>
+    </div>
+    <footer class="sticker__footer">
+      <p class="sticker__footer-text">Desarrollado por</p>
+      <img class="sticker__footer-logo" src="assets/iago-digital-logo.jpg" alt="iAGO Digital" />
+    </footer>
+  </div>
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <header class="sticker__hero">
+    <div class="sticker__hero-row">
+      <div class="sticker__g-wrap">
+        <img src="assets/google-g.svg" alt="Google" />
+      </div>
+      <div class="sticker__copy">
+        <p class="sticker__copy-top">Déjanos una reseña</p>
+        <p class="sticker__copy-bottom">en Google</p>
+      </div>
+    </div>
+    <div class="sticker__stars" aria-hidden="true">
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+    </div>
+    <svg class="sticker__wave" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#ffffff" d="M0 18 V9 Q50 0 100 9 V18 Z" />
+    </svg>
+  </header>
+  <div class="sticker__body">
+    <div class="sticker__actions">
+      <div class="sticker__action">
+        <p class="sticker__action-label">Acerca tu teléfono</p>
+        <img class="sticker__nfc-icon" src="assets/nfc-tap.svg" alt="" />
+      </div>
+      <div class="sticker__divider" aria-hidden="true"></div>
+      <div class="sticker__action">
+        <p class="sticker__action-label">Escanear código QR</p>
+        <img class="sticker__qr" src="assets/qr-placeholder.png" alt="Código QR de ejemplo" />
+      </div>
+    </div>
+    <footer class="sticker__footer">
+      <p class="sticker__footer-text">Desarrollado por</p>
+      <img class="sticker__footer-logo" src="assets/iago-digital-logo.jpg" alt="iAGO Digital" />
+    </footer>
+  </div>
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <header class="sticker__hero">
+    <div class="sticker__hero-row">
+      <div class="sticker__g-wrap">
+        <img src="assets/google-g.svg" alt="Google" />
+      </div>
+      <div class="sticker__copy">
+        <p class="sticker__copy-top">Déjanos una reseña</p>
+        <p class="sticker__copy-bottom">en Google</p>
+      </div>
+    </div>
+    <div class="sticker__stars" aria-hidden="true">
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+    </div>
+    <svg class="sticker__wave" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#ffffff" d="M0 18 V9 Q50 0 100 9 V18 Z" />
+    </svg>
+  </header>
+  <div class="sticker__body">
+    <div class="sticker__actions">
+      <div class="sticker__action">
+        <p class="sticker__action-label">Acerca tu teléfono</p>
+        <img class="sticker__nfc-icon" src="assets/nfc-tap.svg" alt="" />
+      </div>
+      <div class="sticker__divider" aria-hidden="true"></div>
+      <div class="sticker__action">
+        <p class="sticker__action-label">Escanear código QR</p>
+        <img class="sticker__qr" src="assets/qr-placeholder.png" alt="Código QR de ejemplo" />
+      </div>
+    </div>
+    <footer class="sticker__footer">
+      <p class="sticker__footer-text">Desarrollado por</p>
+      <img class="sticker__footer-logo" src="assets/iago-digital-logo.jpg" alt="iAGO Digital" />
+    </footer>
+  </div>
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <header class="sticker__hero">
+    <div class="sticker__hero-row">
+      <div class="sticker__g-wrap">
+        <img src="assets/google-g.svg" alt="Google" />
+      </div>
+      <div class="sticker__copy">
+        <p class="sticker__copy-top">Déjanos una reseña</p>
+        <p class="sticker__copy-bottom">en Google</p>
+      </div>
+    </div>
+    <div class="sticker__stars" aria-hidden="true">
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+    </div>
+    <svg class="sticker__wave" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#ffffff" d="M0 18 V9 Q50 0 100 9 V18 Z" />
+    </svg>
+  </header>
+  <div class="sticker__body">
+    <div class="sticker__actions">
+      <div class="sticker__action">
+        <p class="sticker__action-label">Acerca tu teléfono</p>
+        <img class="sticker__nfc-icon" src="assets/nfc-tap.svg" alt="" />
+      </div>
+      <div class="sticker__divider" aria-hidden="true"></div>
+      <div class="sticker__action">
+        <p class="sticker__action-label">Escanear código QR</p>
+        <img class="sticker__qr" src="assets/qr-placeholder.png" alt="Código QR de ejemplo" />
+      </div>
+    </div>
+    <footer class="sticker__footer">
+      <p class="sticker__footer-text">Desarrollado por</p>
+      <img class="sticker__footer-logo" src="assets/iago-digital-logo.jpg" alt="iAGO Digital" />
+    </footer>
+  </div>
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <header class="sticker__hero">
+    <div class="sticker__hero-row">
+      <div class="sticker__g-wrap">
+        <img src="assets/google-g.svg" alt="Google" />
+      </div>
+      <div class="sticker__copy">
+        <p class="sticker__copy-top">Déjanos una reseña</p>
+        <p class="sticker__copy-bottom">en Google</p>
+      </div>
+    </div>
+    <div class="sticker__stars" aria-hidden="true">
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+    </div>
+    <svg class="sticker__wave" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#ffffff" d="M0 18 V9 Q50 0 100 9 V18 Z" />
+    </svg>
+  </header>
+  <div class="sticker__body">
+    <div class="sticker__actions">
+      <div class="sticker__action">
+        <p class="sticker__action-label">Acerca tu teléfono</p>
+        <img class="sticker__nfc-icon" src="assets/nfc-tap.svg" alt="" />
+      </div>
+      <div class="sticker__divider" aria-hidden="true"></div>
+      <div class="sticker__action">
+        <p class="sticker__action-label">Escanear código QR</p>
+        <img class="sticker__qr" src="assets/qr-placeholder.png" alt="Código QR de ejemplo" />
+      </div>
+    </div>
+    <footer class="sticker__footer">
+      <p class="sticker__footer-text">Desarrollado por</p>
+      <img class="sticker__footer-logo" src="assets/iago-digital-logo.jpg" alt="iAGO Digital" />
+    </footer>
+  </div>
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <header class="sticker__hero">
+    <div class="sticker__hero-row">
+      <div class="sticker__g-wrap">
+        <img src="assets/google-g.svg" alt="Google" />
+      </div>
+      <div class="sticker__copy">
+        <p class="sticker__copy-top">Déjanos una reseña</p>
+        <p class="sticker__copy-bottom">en Google</p>
+      </div>
+    </div>
+    <div class="sticker__stars" aria-hidden="true">
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+    </div>
+    <svg class="sticker__wave" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#ffffff" d="M0 18 V9 Q50 0 100 9 V18 Z" />
+    </svg>
+  </header>
+  <div class="sticker__body">
+    <div class="sticker__actions">
+      <div class="sticker__action">
+        <p class="sticker__action-label">Acerca tu teléfono</p>
+        <img class="sticker__nfc-icon" src="assets/nfc-tap.svg" alt="" />
+      </div>
+      <div class="sticker__divider" aria-hidden="true"></div>
+      <div class="sticker__action">
+        <p class="sticker__action-label">Escanear código QR</p>
+        <img class="sticker__qr" src="assets/qr-placeholder.png" alt="Código QR de ejemplo" />
+      </div>
+    </div>
+    <footer class="sticker__footer">
+      <p class="sticker__footer-text">Desarrollado por</p>
+      <img class="sticker__footer-logo" src="assets/iago-digital-logo.jpg" alt="iAGO Digital" />
+    </footer>
+  </div>
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <header class="sticker__hero">
+    <div class="sticker__hero-row">
+      <div class="sticker__g-wrap">
+        <img src="assets/google-g.svg" alt="Google" />
+      </div>
+      <div class="sticker__copy">
+        <p class="sticker__copy-top">Déjanos una reseña</p>
+        <p class="sticker__copy-bottom">en Google</p>
+      </div>
+    </div>
+    <div class="sticker__stars" aria-hidden="true">
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+      <span class="sticker__star"></span>
+    </div>
+    <svg class="sticker__wave" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#ffffff" d="M0 18 V9 Q50 0 100 9 V18 Z" />
+    </svg>
+  </header>
+  <div class="sticker__body">
+    <div class="sticker__actions">
+      <div class="sticker__action">
+        <p class="sticker__action-label">Acerca tu teléfono</p>
+        <img class="sticker__nfc-icon" src="assets/nfc-tap.svg" alt="" />
+      </div>
+      <div class="sticker__divider" aria-hidden="true"></div>
+      <div class="sticker__action">
+        <p class="sticker__action-label">Escanear código QR</p>
+        <img class="sticker__qr" src="assets/qr-placeholder.png" alt="Código QR de ejemplo" />
+      </div>
+    </div>
+    <footer class="sticker__footer">
+      <p class="sticker__footer-text">Desarrollado por</p>
+      <img class="sticker__footer-logo" src="assets/iago-digital-logo.jpg" alt="iAGO Digital" />
+    </footer>
+  </div>
+</article>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-label="Acerca el teléfono">
+  <!-- Hand -->
+  <path fill="#111111" d="M38 78c-2.2 0-4-1.6-4-3.8V42.5c0-2.4 1.8-4.3 4.2-4.3 1.1 0 2.1.4 2.8 1.1V28.8c0-2.5 1.9-4.5 4.4-4.5 2.4 0 4.3 2 4.3 4.5v8.2c.6-.4 1.4-.6 2.2-.6 2.3 0 4.2 1.7 4.5 3.9.5-.2 1.1-.3 1.7-.3 2.5 0 4.5 2 4.5 4.5v5.2c.6-.3 1.3-.4 2-.4 2.6 0 4.7 2.1 4.7 4.7V74c0 2.2-1.8 4-4 4H38z"/>
+  <!-- Phone -->
+  <rect x="68" y="18" width="28" height="48" rx="4" fill="#111111"/>
+  <rect x="71" y="24" width="22" height="36" rx="1.5" fill="#ffffff"/>
+  <circle cx="82" cy="62.5" r="1.6" fill="#ffffff"/>
+  <!-- NFC waves -->
+  <path d="M102 30c4.5 4 4.5 16 0 20" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/>
+  <path d="M108 24c8 7 8 28 0 35" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/>
+  <path d="M114 18c11 10 11 40 0 50" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/>
+</svg>
