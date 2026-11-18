@@ -1,4 +1,5 @@
 import postgres from "postgres";
+import { hostedDatabaseUrl } from "./config";
 
 let appDb: ReturnType<typeof postgres> | undefined;
 let adminDb: ReturnType<typeof postgres> | undefined;
@@ -7,13 +8,13 @@ function appDatabaseUrl() {
   if (process.env.NODE_ENV !== "production" && process.env.LOCAL_DATABASE_URL) {
     return process.env.LOCAL_DATABASE_URL;
   }
-  return process.env.DATABASE_URL ?? process.env.LOCAL_DATABASE_URL ?? null;
+  return hostedDatabaseUrl() ?? process.env.LOCAL_DATABASE_URL ?? null;
 }
 
 export function getAppDb() {
   const url = appDatabaseUrl();
   if (!url) {
-    throw new Error("LOCAL_DATABASE_URL is not set");
+    throw new Error("DATABASE_URL or LOCAL_DATABASE_URL is not set");
   }
   appDb ??= postgres(url, { max: 8, prepare: false });
   return appDb;
@@ -21,13 +22,11 @@ export function getAppDb() {
 
 export function getAdminDb() {
   const url =
-    process.env.NODE_ENV === "production"
-      ? process.env.DATABASE_URL
-      : process.env.LOCAL_DATABASE_ADMIN_URL;
+    process.env.NODE_ENV === "production" ? hostedDatabaseUrl() : process.env.LOCAL_DATABASE_ADMIN_URL;
   if (!url) {
     throw new Error(
       process.env.NODE_ENV === "production"
-        ? "DATABASE_URL is not set"
+        ? "DATABASE_URL (or POSTGRES_URL) is not set"
         : "LOCAL_DATABASE_ADMIN_URL is not set",
     );
   }
