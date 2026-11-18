@@ -25,7 +25,13 @@ export default async function SetupPage() {
       <div className="mt-8">
         {mode === "unconfigured" ? (
           <p className="text-sm leading-6">
-            The database is not configured. Set the variables in `.env.example`, apply the Supabase migration, then return here.
+            The database is not configured. In Vercel, set <code>SESSION_SECRET</code> (32+ characters) and connect Neon
+            so <code>POSTGRES_URL</code> or <code>DATABASE_URL</code> is present, then redeploy.
+          </p>
+        ) : hasAdmin === null ? (
+          <p className="text-sm leading-6">
+            The app can see database settings, but it could not read the database. Open the latest Vercel deployment
+            build log and confirm lines like <code>migrate: applied …</code> appear. Then redeploy and return here.
           </p>
         ) : (
           <SetupForm />

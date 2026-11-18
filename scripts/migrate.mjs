@@ -1,7 +1,12 @@
 import { readdir, readFile } from "node:fs/promises";
 import postgres from "postgres";
 
-const url = process.env.DATABASE_URL_UNPOOLED?.trim() || process.env.DATABASE_URL?.trim() || "";
+const url =
+  process.env.DATABASE_URL_UNPOOLED?.trim() ||
+  process.env.POSTGRES_URL_NON_POOLING?.trim() ||
+  process.env.DATABASE_URL?.trim() ||
+  process.env.POSTGRES_URL?.trim() ||
+  "";
 if (url === "") {
   console.log("migrate: nothing to do");
   process.exit(0);

@@ -7,7 +7,7 @@
     "build": "next build && node scripts/migrate.mjs",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test --test-concurrency=1 src/domain/*.test.ts tests/*.test.ts",
+    "test": "node --experimental-strip-types --test --test-concurrency=1 src/domain/*.test.ts src/lib/*.test.ts tests/*.test.ts",
     "db:prepare": "sh scripts/prepare-local-db.sh"
   },
   "dependencies": {

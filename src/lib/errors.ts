@@ -85,6 +85,15 @@ export function toActionError(error: unknown): string {
   if (message.startsWith("Use at least 10")) {
     return message;
   }
+  if (message.includes("SESSION_SECRET must be at least 32")) {
+    return "SESSION_SECRET must be at least 32 characters in Vercel env vars.";
+  }
+  if (/relation .* does not exist/i.test(message) || /schema "auth" does not exist/i.test(message)) {
+    return "Database tables are missing. Redeploy the app so migrations can run, then try setup again.";
+  }
+  if (/password authentication failed|ECONNREFUSED|ENOTFOUND|getaddrinfo|timeout|SSL/i.test(message)) {
+    return "Could not connect to the database. Check POSTGRES_URL / DATABASE_URL in Vercel.";
+  }
 
   return "Something went wrong. Try again.";
 }

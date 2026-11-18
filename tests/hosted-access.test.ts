@@ -13,6 +13,7 @@ test("production database accounts stay available when Supabase is unset", () =>
   const previous = {
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
+    POSTGRES_URL: process.env.POSTGRES_URL,
     SESSION_SECRET: process.env.SESSION_SECRET,
     LOCAL_DATABASE_URL: process.env.LOCAL_DATABASE_URL,
     LOCAL_DATABASE_ADMIN_URL: process.env.LOCAL_DATABASE_ADMIN_URL,
@@ -22,6 +23,34 @@ test("production database accounts stay available when Supabase is unset", () =>
 
   process.env.NODE_ENV = "production";
   process.env.DATABASE_URL = "postgres://hosted.example/iago";
+  delete process.env.POSTGRES_URL;
+  process.env.SESSION_SECRET = "x".repeat(32);
+  delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+  delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  try {
+    assert.equal(getDataMode(), "hosted");
+    assert.equal(accountMode(), "database");
+  } finally {
+    restoreEnv(previous);
+  }
+});
+
+test("Vercel Neon POSTGRES_URL is enough for hosted mode", () => {
+  const previous = {
+    NODE_ENV: process.env.NODE_ENV,
+    DATABASE_URL: process.env.DATABASE_URL,
+    POSTGRES_URL: process.env.POSTGRES_URL,
+    SESSION_SECRET: process.env.SESSION_SECRET,
+    LOCAL_DATABASE_URL: process.env.LOCAL_DATABASE_URL,
+    LOCAL_DATABASE_ADMIN_URL: process.env.LOCAL_DATABASE_ADMIN_URL,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  };
+
+  process.env.NODE_ENV = "production";
+  delete process.env.DATABASE_URL;
+  process.env.POSTGRES_URL = "postgres://neon.example/iago";
   process.env.SESSION_SECRET = "x".repeat(32);
   delete process.env.NEXT_PUBLIC_SUPABASE_URL;
   delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
