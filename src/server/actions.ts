@@ -38,6 +38,7 @@ export async function loginAction(_state: ActionState, formData: FormData): Prom
     return { error: "Enter the email and password for your account." };
   }
 
+  let signedInUserId: string | null = null;
   try {
     const mode = accountMode();
     switch (mode) {
@@ -47,6 +48,7 @@ export async function loginAction(_state: ActionState, formData: FormData): Prom
           return { error: "Those credentials do not match an account." };
         }
         await writeSession(userId);
+        signedInUserId = userId;
         break;
       }
       case "supabase": {
@@ -55,6 +57,8 @@ export async function loginAction(_state: ActionState, formData: FormData): Prom
         if (error) {
           return { error: "Those credentials do not match an account." };
         }
+        const { data } = await supabase.auth.getUser();
+        signedInUserId = data.user?.id ?? null;
         break;
       }
       case "unconfigured":
@@ -69,7 +73,27 @@ export async function loginAction(_state: ActionState, formData: FormData): Prom
   }
 
   const nextPath = safeNextPath(formData.get("next"));
-  redirect(nextPath ?? "/enter");
+  if (nextPath) {
+    redirect(nextPath);
+  }
+
+  if (signedInUserId) {
+    try {
+      const profile = await getProfile(signedInUserId);
+      if (profile?.platformRole === "super_admin") {
+        redirect("/admin");
+      }
+      const memberships = await listMemberships(signedInUserId);
+      if (memberships[0]) {
+        await writeBusinessId(memberships[0].businessId);
+        redirect("/app");
+      }
+    } catch {
+      // Fall through to /enter.
+    }
+  }
+
+  redirect("/enter");
 }
 
 export async function setupAction(_state: ActionState, formData: FormData): Promise<ActionState> {

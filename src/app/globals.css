@@ -4,12 +4,60 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Same local Syne / DM Sans files as the iAGO Digital site. */
+@font-face {
+  font-family: "Syne";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/fonts/syne-latin-ext.woff2") format("woff2");
+  unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308,
+    u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c4, u+2113,
+    u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+  font-family: "Syne";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/fonts/syne-latin.woff2") format("woff2");
+  unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308,
+    u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url("/fonts/dm-sans-latin-ext.woff2") format("woff2");
+  unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308,
+    u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c4, u+2113,
+    u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url("/fonts/dm-sans-latin.woff2") format("woff2");
+  unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308,
+    u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-fraunces);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-body);
+  --font-heading: var(--font-display);
+  --color-ink: #0a0a0a;
+  --color-ink-raised: #121212;
+  --color-ink-line: #242424;
+  --color-coral: #e8734a;
+  --color-coral-bright: #ff7a4d;
+  --color-coral-dim: #b85735;
+  --color-bone: #f4f1ea;
+  --color-mute: #8c8a85;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -46,41 +94,44 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --tracking-tightest: -0.045em;
 }
 
 :root {
-  --background: oklch(0.975 0.008 85);
-  --foreground: oklch(0.25 0.025 175);
-  --card: oklch(0.995 0.004 85);
-  --card-foreground: oklch(0.25 0.025 175);
-  --popover: oklch(0.995 0.004 85);
-  --popover-foreground: oklch(0.25 0.025 175);
-  --primary: oklch(0.32 0.045 175);
-  --primary-foreground: oklch(0.97 0.01 85);
-  --secondary: oklch(0.94 0.015 80);
-  --secondary-foreground: oklch(0.28 0.03 175);
-  --muted: oklch(0.94 0.012 80);
-  --muted-foreground: oklch(0.46 0.02 175);
-  --accent: oklch(0.93 0.03 75);
-  --accent-foreground: oklch(0.28 0.04 55);
-  --destructive: oklch(0.52 0.16 28);
-  --border: oklch(0.88 0.015 80);
-  --input: oklch(0.88 0.015 80);
-  --ring: oklch(0.62 0.1 55);
-  --chart-1: oklch(0.62 0.1 55);
-  --chart-2: oklch(0.4 0.05 175);
-  --chart-3: oklch(0.55 0.04 175);
-  --chart-4: oklch(0.72 0.08 75);
-  --chart-5: oklch(0.32 0.04 175);
-  --radius: 0.7rem;
-  --sidebar: oklch(0.27 0.035 175);
-  --sidebar-foreground: oklch(0.95 0.01 85);
-  --sidebar-primary: oklch(0.72 0.11 65);
-  --sidebar-primary-foreground: oklch(0.22 0.03 175);
-  --sidebar-accent: oklch(0.34 0.04 175);
-  --sidebar-accent-foreground: oklch(0.97 0.01 85);
-  --sidebar-border: oklch(0.38 0.03 175);
-  --sidebar-ring: oklch(0.72 0.11 65);
+  --font-display: "Syne", Arial, sans-serif;
+  --font-body: "DM Sans", Arial, sans-serif;
+  --background: #f4f1ea;
+  --foreground: #0a0a0a;
+  --card: #fbf9f4;
+  --card-foreground: #0a0a0a;
+  --popover: #fbf9f4;
+  --popover-foreground: #0a0a0a;
+  --primary: #0a0a0a;
+  --primary-foreground: #f4f1ea;
+  --secondary: #ebe6dc;
+  --secondary-foreground: #0a0a0a;
+  --muted: #ebe6dc;
+  --muted-foreground: #8c8a85;
+  --accent: #e8734a;
+  --accent-foreground: #f4f1ea;
+  --destructive: #b85735;
+  --border: #ddd6c8;
+  --input: #ddd6c8;
+  --ring: #e8734a;
+  --chart-1: #e8734a;
+  --chart-2: #0a0a0a;
+  --chart-3: #8c8a85;
+  --chart-4: #ff7a4d;
+  --chart-5: #b85735;
+  --radius: 0.75rem;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #f4f1ea;
+  --sidebar-primary: #e8734a;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #121212;
+  --sidebar-accent-foreground: #f4f1ea;
+  --sidebar-border: #242424;
+  --sidebar-ring: #e8734a;
 }
 
 @layer base {
@@ -88,9 +139,27 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
   html {
     @apply font-sans;
   }
+  ::selection {
+    background: #e8734a;
+    color: #ffffff;
+  }
+}
+
+.iago-auth-shell {
+  background:
+    radial-gradient(circle at 12% 18%, rgb(232 115 74 / 0.18), transparent 34%),
+    radial-gradient(circle at 88% 8%, rgb(232 115 74 / 0.1), transparent 28%),
+    linear-gradient(180deg, #f4f1ea 0%, #efe9df 100%);
+}
+
+.iago-home-shell {
+  background:
+    radial-gradient(circle at 80% 12%, rgb(232 115 74 / 0.22), transparent 30%),
+    radial-gradient(circle at 8% 70%, rgb(10 10 10 / 0.06), transparent 36%),
+    linear-gradient(135deg, #f4f1ea 0%, #f7f3ec 48%, #efe8dc 100%);
 }
