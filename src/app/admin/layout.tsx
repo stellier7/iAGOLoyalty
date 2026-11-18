@@ -11,6 +11,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       items={[
         { href: "/admin", label: "Overview" },
         { href: "/admin/businesses", label: "Businesses" },
+        { href: "/admin/destinations", label: "QR destinations" },
         { href: "/admin/settings", label: "Settings" },
         { href: "/app", label: "Business app" },
       ]}
