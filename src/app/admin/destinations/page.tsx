@@ -63,6 +63,20 @@ export default async function DestinationsPage() {
                         <Link href={`/admin/destinations/${destination.id}`} className="underline">
                           Edit destination
                         </Link>
+                        <a
+                          href={`/admin/destinations/${destination.id}/qr?format=png`}
+                          className="underline"
+                          download
+                        >
+                          Download PNG
+                        </a>
+                        <a
+                          href={`/admin/destinations/${destination.id}/qr?format=svg`}
+                          className="underline"
+                          download
+                        >
+                          Download SVG
+                        </a>
                         <a href={permanentUrl} target="_blank" rel="noreferrer" className="underline">
                           Test destination
                         </a>

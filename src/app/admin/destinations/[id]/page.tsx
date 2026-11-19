@@ -60,11 +60,16 @@ export default async function DestinationDetailPage({
         </Link>
       </div>
       <div className="grid gap-3">
-        <QrCode value={permanentUrl} label={`QR for ${destination.businessName}`} />
+        <QrCode
+          value={permanentUrl}
+          label={`QR for ${destination.businessName}`}
+          downloadHrefPng={`/admin/destinations/${destination.id}/qr?format=png`}
+          downloadHrefSvg={`/admin/destinations/${destination.id}/qr?format=svg`}
+        />
         <p className="text-sm leading-6 text-muted-foreground">
           {destination.destinationUrl
-            ? "Print this QR. Customers land directly on the destination URL."
-            : "Print this QR now. Until a destination is set, scanners open iagodigital.com."}
+            ? "Download PNG or SVG for print/NFC artwork. Customers land on the destination URL."
+            : "Download PNG or SVG now. Until a destination is set, scanners open iagodigital.com."}
         </p>
       </div>
     </div>
