@@ -116,6 +116,47 @@ export function parseDestinationUrl(
   }
 }
 
+/** Where scanners actually land today (same rules as `/go/[code]`). */
+export function effectiveQrDestinationUrl(
+  destinationUrl: string | null | undefined,
+  destinationType: DestinationType,
+): string {
+  if (!destinationUrl?.trim()) {
+    return DEFAULT_QR_FALLBACK_URL;
+  }
+  try {
+    return parseDestinationUrl(destinationUrl, destinationType) ?? DEFAULT_QR_FALLBACK_URL;
+  } catch {
+    return DEFAULT_QR_FALLBACK_URL;
+  }
+}
+
+/**
+ * Values for the edit form so Destination URL matches what the QR opens.
+ * Mismatched type/URL pairs (e.g. Google Reviews + loyalty app URL) become Website + fallback.
+ */
+export function normalizeQrDestinationForEdit(
+  destinationUrl: string | null | undefined,
+  destinationType: DestinationType,
+): { destinationType: DestinationType; destinationUrl: string } {
+  if (!destinationUrl?.trim()) {
+    return { destinationType, destinationUrl: "" };
+  }
+
+  try {
+    const parsed = parseDestinationUrl(destinationUrl, destinationType);
+    if (!parsed) {
+      return { destinationType, destinationUrl: "" };
+    }
+    return { destinationType, destinationUrl: parsed };
+  } catch {
+    return {
+      destinationType: "website",
+      destinationUrl: DEFAULT_QR_FALLBACK_URL,
+    };
+  }
+}
+
 export function destinationStatusLabel(status: DestinationStatus): string {
   switch (status) {
     case "active":

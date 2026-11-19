@@ -3,7 +3,9 @@ import { describe, test } from "node:test";
 import {
   DEFAULT_QR_FALLBACK_URL,
   DESTINATION_TYPES,
+  effectiveQrDestinationUrl,
   isQrRedirectCode,
+  normalizeQrDestinationForEdit,
   parseDestinationUrl,
 } from "./qr-redirect.ts";
 
@@ -70,6 +72,21 @@ describe("qr redirect destination URLs", () => {
     assert.equal(
       parseDestinationUrl("https://iagodigital.com/", "website"),
       "https://iagodigital.com/",
+    );
+  });
+
+  test("effective destination matches what scanners open for mismatched Google rows", () => {
+    assert.equal(
+      effectiveQrDestinationUrl("https://loyalty.iagodigital.com/", "google_reviews"),
+      DEFAULT_QR_FALLBACK_URL,
+    );
+    assert.equal(
+      effectiveQrDestinationUrl("https://maps.app.goo.gl/abc", "google_reviews"),
+      "https://maps.app.goo.gl/abc",
+    );
+    assert.deepEqual(
+      normalizeQrDestinationForEdit("https://loyalty.iagodigital.com/", "google_reviews"),
+      { destinationType: "website", destinationUrl: DEFAULT_QR_FALLBACK_URL },
     );
   });
 });

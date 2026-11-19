@@ -2,6 +2,8 @@ import Link from "next/link";
 import {
   DESTINATION_TYPE_LABELS,
   destinationStatusLabel,
+  effectiveQrDestinationUrl,
+  normalizeQrDestinationForEdit,
 } from "@/domain/qr-redirect";
 import { qrPublicOrigin } from "@/lib/public-request";
 import { listQrRedirects } from "@/server/qr-redirects";
@@ -49,12 +51,20 @@ export default async function DestinationsPage() {
             <tbody>
               {destinations.map((destination) => {
                 const permanentUrl = `${origin}/go/${destination.code}`;
+                const opensUrl = effectiveQrDestinationUrl(
+                  destination.destinationUrl,
+                  destination.destinationType,
+                );
+                const display = normalizeQrDestinationForEdit(
+                  destination.destinationUrl,
+                  destination.destinationType,
+                );
                 return (
                   <tr key={destination.id} className="border-t align-top">
                     <td className="py-3 pr-3">{destination.businessName}</td>
-                    <td className="py-3 pr-3">{DESTINATION_TYPE_LABELS[destination.destinationType]}</td>
+                    <td className="py-3 pr-3">{DESTINATION_TYPE_LABELS[display.destinationType]}</td>
                     <td className="max-w-[14rem] break-all py-3 pr-3 text-muted-foreground">
-                      {destination.destinationUrl ?? "iagodigital.com (not set yet)"}
+                      {opensUrl}
                     </td>
                     <td className="max-w-[12rem] break-all py-3 pr-3">{permanentUrl}</td>
                     <td className="py-3 pr-3">{destinationStatusLabel(destination.status)}</td>

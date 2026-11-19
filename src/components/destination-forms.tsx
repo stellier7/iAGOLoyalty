@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import {
   DEFAULT_QR_FALLBACK_URL,
   DESTINATION_STATUSES,
@@ -24,12 +24,32 @@ const statusOptions = DESTINATION_STATUSES.map((value) => ({
   label: value === "active" ? "Active" : "Inactive",
 }));
 
+function urlHelpForType(type: DestinationType): string {
+  switch (type) {
+    case "google_reviews":
+      return "Paste a Google Maps or Google review link (maps.app.goo.gl, google.com, …).";
+    case "instagram":
+      return "Paste an Instagram profile or post URL.";
+    case "whatsapp":
+      return "Paste a WhatsApp link such as https://wa.me/...";
+    case "website":
+      return `Paste any website URL, or leave blank for ${DEFAULT_QR_FALLBACK_URL}.`;
+    case "custom":
+      return "Paste any http(s) URL.";
+    default: {
+      const exhaustive: never = type;
+      return exhaustive;
+    }
+  }
+}
+
 export function CreateDestinationForm({
   businessOptions,
 }: {
   businessOptions: readonly { value: string; label: string }[];
 }) {
   const [state, action] = useActionState(createDestinationAction, {});
+  const [destinationType, setDestinationType] = useState<DestinationType>("website");
 
   return (
     <form action={action} className="grid max-w-xl gap-4">
@@ -40,12 +60,24 @@ export function CreateDestinationForm({
         defaultValue=""
         options={[{ value: "", label: "None" }, ...businessOptions]}
       />
-      <SelectField
-        label="Destination type"
-        name="destinationType"
-        defaultValue="website"
-        options={typeOptions}
-      />
+      <div className="grid gap-1.5">
+        <label htmlFor="destinationType" className="text-sm font-medium">
+          Destination type
+        </label>
+        <select
+          id="destinationType"
+          name="destinationType"
+          value={destinationType}
+          onChange={(event) => setDestinationType(event.target.value as DestinationType)}
+          className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          {typeOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
       <TextField
         label="How many QR codes"
         name="count"
@@ -57,8 +89,8 @@ export function CreateDestinationForm({
       <TextField
         label="Destination URL (optional)"
         name="destinationUrl"
-        type="url"
-        placeholder={`Leave blank → ${DEFAULT_QR_FALLBACK_URL}. Or paste Website, Google, Instagram, WhatsApp, or custom.`}
+        type="text"
+        placeholder={urlHelpForType(destinationType)}
       />
       <TextField
         label="Permanent QR code (optional)"
@@ -67,9 +99,9 @@ export function CreateDestinationForm({
       />
       <SelectField label="Status" name="status" defaultValue="active" options={statusOptions} />
       <p className="text-sm text-muted-foreground">
-        Create up to 50 empty codes at once. Each keeps a permanent `/go/001` style link. Leave the URL blank
-        to send scanners to iagodigital.com until you set Website, Google Reviews, Instagram, WhatsApp, or a
-        custom URL — without reprinting.
+        Destination URL is where scanners land after the permanent QR. Leave blank to send them to{" "}
+        {DEFAULT_QR_FALLBACK_URL}. Change type first (Website, Google Reviews, Instagram, …) so the URL
+        matches.
       </p>
       <FormError message={state.error} />
       <SubmitButton pendingLabel="Saving…">Create destination</SubmitButton>
@@ -81,8 +113,8 @@ export function EditDestinationForm({
   id,
   businessName,
   businessId,
-  destinationType,
-  destinationUrl,
+  destinationType: initialType,
+  destinationUrl: initialUrl,
   status,
   businessOptions,
 }: {
@@ -90,11 +122,12 @@ export function EditDestinationForm({
   businessName: string;
   businessId: string | null;
   destinationType: DestinationType;
-  destinationUrl: string | null;
+  destinationUrl: string;
   status: DestinationStatus;
   businessOptions: readonly { value: string; label: string }[];
 }) {
   const [state, action] = useActionState(updateDestinationAction, {});
+  const [destinationType, setDestinationType] = useState<DestinationType>(initialType);
 
   return (
     <form action={action} className="grid max-w-xl gap-4">
@@ -106,23 +139,36 @@ export function EditDestinationForm({
         defaultValue={businessId ?? ""}
         options={[{ value: "", label: "None" }, ...businessOptions]}
       />
-      <SelectField
-        label="Destination type"
-        name="destinationType"
-        defaultValue={destinationType}
-        options={typeOptions}
-      />
+      <div className="grid gap-1.5">
+        <label htmlFor="destinationType" className="text-sm font-medium">
+          Destination type
+        </label>
+        <select
+          id="destinationType"
+          name="destinationType"
+          value={destinationType}
+          onChange={(event) => setDestinationType(event.target.value as DestinationType)}
+          className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          {typeOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
       <TextField
         label="Destination URL"
         name="destinationUrl"
-        type="url"
-        defaultValue={destinationUrl ?? ""}
-        placeholder="Website, Google Reviews, Instagram, WhatsApp, or any https URL"
+        type="text"
+        defaultValue={initialUrl}
+        placeholder={urlHelpForType(destinationType)}
       />
       <SelectField label="Status" name="status" defaultValue={status} options={statusOptions} />
       <p className="text-sm text-muted-foreground">
-        Changing the destination URL or type does not change the permanent QR code. Leave the URL blank to keep
-        sending scanners to {DEFAULT_QR_FALLBACK_URL}.
+        This Destination URL is what the QR opens today. Changing it does not change the permanent QR code (
+        /go/…). Leave blank to send scanners to {DEFAULT_QR_FALLBACK_URL}. For Google review NFC cards, set
+        type to Google Reviews and paste the Maps link.
       </p>
       <FormError message={state.error} />
       <SubmitButton pendingLabel="Saving…">Save destination</SubmitButton>
