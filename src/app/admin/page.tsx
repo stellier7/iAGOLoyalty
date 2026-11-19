@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isNextRedirect } from "@/lib/errors";
 import { platformCounts } from "@/server/queries";
 import { requireAdmin } from "@/server/workspace";
 
@@ -43,11 +44,8 @@ export default async function AdminHomePage() {
       </div>
     );
   } catch (error) {
-    if (typeof error === "object" && error && "digest" in error) {
-      const digest = String((error as { digest?: string }).digest ?? "");
-      if (digest.startsWith("NEXT_REDIRECT")) {
-        throw error;
-      }
+    if (isNextRedirect(error)) {
+      throw error;
     }
     const message = error instanceof Error ? error.message : "Unknown platform error";
     return (
