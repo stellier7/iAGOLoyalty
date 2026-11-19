@@ -55,6 +55,7 @@ const MESSAGES: Record<string, string> = {
   invalid_instagram_url: "Paste an Instagram profile or post URL.",
   invalid_qr_code: "Use letters and numbers only for the permanent QR code.",
   qr_code_taken: "That permanent QR code is already in use.",
+  invalid_batch_count: "Create between 1 and 50 QR codes at a time.",
 };
 
 export function isNextRedirect(error: unknown): boolean {

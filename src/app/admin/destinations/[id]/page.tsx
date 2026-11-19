@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { EditDestinationForm } from "@/components/destination-forms";
 import { QrCode } from "@/components/qr-code";
 import { DESTINATION_TYPE_LABELS, destinationStatusLabel } from "@/domain/qr-redirect";
-import { publicOrigin } from "@/lib/public-request";
+import { qrPublicOrigin } from "@/lib/public-request";
 import { listBusinesses } from "@/server/queries";
 import { getQrRedirect } from "@/server/qr-redirects";
 import { requireAdmin } from "@/server/workspace";
@@ -20,7 +20,7 @@ export default async function DestinationDetailPage({
   const [destination, businesses, origin] = await Promise.all([
     getQrRedirect(userId, id),
     listBusinesses(userId),
-    publicOrigin(),
+    qrPublicOrigin(),
   ]);
 
   if (!destination) {
@@ -62,7 +62,9 @@ export default async function DestinationDetailPage({
       <div className="grid gap-3">
         <QrCode value={permanentUrl} label={`QR for ${destination.businessName}`} />
         <p className="text-sm leading-6 text-muted-foreground">
-          Print this QR. Customers land directly on the destination URL with no iAGO landing page.
+          {destination.destinationUrl
+            ? "Print this QR. Customers land directly on the destination URL."
+            : "Print this QR now. Until a destination is set, scanners open iagodigital.com."}
         </p>
       </div>
     </div>

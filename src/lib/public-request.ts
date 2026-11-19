@@ -11,6 +11,15 @@ export async function publicOrigin() {
   return `${proto}://${host}`;
 }
 
+/** Origin printed on QR destination stickers. Falls back to the app origin. */
+export async function qrPublicOrigin() {
+  const configured = process.env.NEXT_PUBLIC_QR_ORIGIN?.trim();
+  if (configured) {
+    return configured.replace(/\/$/, "");
+  }
+  return publicOrigin();
+}
+
 export async function rateBucket(scope: string) {
   const headerStore = await headers();
   const forwarded = headerStore.get("x-forwarded-for")?.split(",")[0]?.trim();

@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { isQrRedirectCode, parseDestinationUrl } from "@/domain/qr-redirect";
+import {
+  DEFAULT_QR_FALLBACK_URL,
+  isQrRedirectCode,
+  parseDestinationUrl,
+} from "@/domain/qr-redirect";
 import { resolveQrRedirect } from "@/server/qr-redirects";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +25,14 @@ function notFound() {
   });
 }
 
+function redirectTo(destination: string) {
+  const response = NextResponse.redirect(destination, 307);
+  for (const [key, value] of Object.entries(NO_STORE)) {
+    response.headers.set(key, value);
+  }
+  return response;
+}
+
 export async function GET(
   _request: Request,
   context: { params: Promise<{ code: string }> },
@@ -36,16 +48,19 @@ export async function GET(
     return notFound();
   }
 
-  let destination: string;
-  try {
-    destination = parseDestinationUrl(resolved.destinationUrl, resolved.destinationType);
-  } catch {
-    return notFound();
+  if (!resolved.destinationUrl || resolved.placeholder) {
+    return redirectTo(DEFAULT_QR_FALLBACK_URL);
   }
 
-  const response = NextResponse.redirect(destination, 307);
-  for (const [key, value] of Object.entries(NO_STORE)) {
-    response.headers.set(key, value);
+  try {
+    const parsed = parseDestinationUrl(resolved.destinationUrl, resolved.destinationType);
+    if (!parsed) {
+      return redirectTo(DEFAULT_QR_FALLBACK_URL);
+    }
+    return redirectTo(parsed);
+  } catch {
+    // Misconfigured type/URL pairs (e.g. Website URL saved as Google Reviews) must
+    // still open something printable/testable instead of a dead 404.
+    return redirectTo(DEFAULT_QR_FALLBACK_URL);
   }
-  return response;
 }

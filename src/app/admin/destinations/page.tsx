@@ -3,7 +3,7 @@ import {
   DESTINATION_TYPE_LABELS,
   destinationStatusLabel,
 } from "@/domain/qr-redirect";
-import { publicOrigin } from "@/lib/public-request";
+import { qrPublicOrigin } from "@/lib/public-request";
 import { listQrRedirects } from "@/server/qr-redirects";
 import { requireAdmin } from "@/server/workspace";
 
@@ -11,7 +11,7 @@ export const metadata = { title: "QR destinations" };
 
 export default async function DestinationsPage() {
   const { userId } = await requireAdmin();
-  const [destinations, origin] = await Promise.all([listQrRedirects(userId), publicOrigin()]);
+  const [destinations, origin] = await Promise.all([listQrRedirects(userId), qrPublicOrigin()]);
 
   return (
     <div>
@@ -19,8 +19,8 @@ export default async function DestinationsPage() {
         <div>
           <h2 className="font-heading text-3xl">QR destinations</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-            Each QR code keeps a permanent `/go/` URL. Update the Google Review link (or WhatsApp, Instagram,
-            website, or custom URL) anytime without reprinting the code.
+            Each QR code keeps a permanent `/go/` URL. Print them empty if needed — scanners land on
+            iagodigital.com until you set a Website, Google Reviews, Instagram, WhatsApp, or custom URL.
           </p>
         </div>
         <Link href="/admin/destinations/new" className="text-sm underline">
@@ -30,7 +30,8 @@ export default async function DestinationsPage() {
 
       {destinations.length === 0 ? (
         <p className="mt-6 max-w-lg text-sm leading-6 text-muted-foreground">
-          No destinations yet. Create one, paste the Google Review URL, and print the permanent QR URL.
+          No destinations yet. Create empty codes, print the permanent QR URLs, then set each destination
+          (Website, Google Reviews, Instagram, WhatsApp, or custom) when you have it.
         </p>
       ) : (
         <div className="mt-6 overflow-x-auto">
@@ -53,7 +54,7 @@ export default async function DestinationsPage() {
                     <td className="py-3 pr-3">{destination.businessName}</td>
                     <td className="py-3 pr-3">{DESTINATION_TYPE_LABELS[destination.destinationType]}</td>
                     <td className="max-w-[14rem] break-all py-3 pr-3 text-muted-foreground">
-                      {destination.destinationUrl}
+                      {destination.destinationUrl ?? "iagodigital.com (not set yet)"}
                     </td>
                     <td className="max-w-[12rem] break-all py-3 pr-3">{permanentUrl}</td>
                     <td className="py-3 pr-3">{destinationStatusLabel(destination.status)}</td>
