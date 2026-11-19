@@ -3,7 +3,7 @@ import {
   DESTINATION_TYPE_LABELS,
   destinationStatusLabel,
 } from "@/domain/qr-redirect";
-import { publicOrigin } from "@/lib/public-request";
+import { qrPublicOrigin } from "@/lib/public-request";
 import { listQrRedirects } from "@/server/qr-redirects";
 import { requireAdmin } from "@/server/workspace";
 
@@ -11,7 +11,7 @@ export const metadata = { title: "QR destinations" };
 
 export default async function DestinationsPage() {
   const { userId } = await requireAdmin();
-  const [destinations, origin] = await Promise.all([listQrRedirects(userId), publicOrigin()]);
+  const [destinations, origin] = await Promise.all([listQrRedirects(userId), qrPublicOrigin()]);
 
   return (
     <div>

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { EditDestinationForm } from "@/components/destination-forms";
 import { QrCode } from "@/components/qr-code";
 import { DESTINATION_TYPE_LABELS, destinationStatusLabel } from "@/domain/qr-redirect";
-import { publicOrigin } from "@/lib/public-request";
+import { qrPublicOrigin } from "@/lib/public-request";
 import { listBusinesses } from "@/server/queries";
 import { getQrRedirect } from "@/server/qr-redirects";
 import { requireAdmin } from "@/server/workspace";
@@ -20,7 +20,7 @@ export default async function DestinationDetailPage({
   const [destination, businesses, origin] = await Promise.all([
     getQrRedirect(userId, id),
     listBusinesses(userId),
-    publicOrigin(),
+    qrPublicOrigin(),
   ]);
 
   if (!destination) {
