@@ -48,6 +48,22 @@ export async function verifyLocalLogin(email: string, password: string): Promise
   return matches ? row.id : null;
 }
 
+/** Reset password for an existing super admin using the SETUP_TOKEN gate (caller checks token). */
+export async function resetLocalSuperAdminPassword(email: string, password: string): Promise<boolean> {
+  const passwordHash = await hashPassword(password);
+  const rows = await getAdminDb()<{ id: string }[]>`
+    update auth.local_credentials c
+    set password_hash = ${passwordHash}
+    from auth.users u
+    join public.profiles p on p.id = u.id
+    where c.user_id = u.id
+      and lower(u.email) = lower(${email.trim()})
+      and p.platform_role = 'super_admin'
+    returning u.id
+  `;
+  return Boolean(rows[0]?.id);
+}
+
 export async function createLocalUser(input: {
   email: string;
   password: string;
