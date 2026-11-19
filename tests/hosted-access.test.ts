@@ -2,7 +2,12 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { describe, test } from "node:test";
 import postgres from "postgres";
-import { accountMode, getDataMode } from "../src/lib/config.ts";
+import {
+  accountMode,
+  describeAuthConfig,
+  getDataMode,
+  unconfiguredAuthMessage,
+} from "../src/lib/config.ts";
 
 const superUrl = "postgres://postgres@127.0.0.1:5432/postgres";
 const hostedUrl = "postgres://hosted_owner:hosted_owner_test@127.0.0.1:5432/iago_hosted_test";
@@ -58,6 +63,40 @@ test("Vercel Neon POSTGRES_URL is enough for hosted mode", () => {
   try {
     assert.equal(getDataMode(), "hosted");
     assert.equal(accountMode(), "database");
+  } finally {
+    restoreEnv(previous);
+  }
+});
+
+test("auth diagnostics name the missing Vercel env vars", () => {
+  const previous = {
+    NODE_ENV: process.env.NODE_ENV,
+    DATABASE_URL: process.env.DATABASE_URL,
+    POSTGRES_URL: process.env.POSTGRES_URL,
+    POSTGRES_PRISMA_URL: process.env.POSTGRES_PRISMA_URL,
+    SESSION_SECRET: process.env.SESSION_SECRET,
+    LOCAL_DATABASE_URL: process.env.LOCAL_DATABASE_URL,
+    LOCAL_DATABASE_ADMIN_URL: process.env.LOCAL_DATABASE_ADMIN_URL,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  };
+
+  process.env.NODE_ENV = "production";
+  delete process.env.DATABASE_URL;
+  delete process.env.POSTGRES_URL;
+  delete process.env.POSTGRES_PRISMA_URL;
+  process.env.SESSION_SECRET = "too-short";
+  delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+  delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  try {
+    assert.equal(getDataMode(), "unconfigured");
+    const report = describeAuthConfig();
+    assert.deepEqual(report.missing, [
+      "POSTGRES_URL or DATABASE_URL",
+      "SESSION_SECRET (needs 32+ characters)",
+    ]);
+    assert.match(unconfiguredAuthMessage(report), /SESSION_SECRET/);
   } finally {
     restoreEnv(previous);
   }
