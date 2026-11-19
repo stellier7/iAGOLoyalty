@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Google Review sheet — 3×3 @ 10cm</title>
+    <link rel="stylesheet" href="sticker.css" />
+    <style>
+      @page { size: 12in 17in; margin: 0; }
+      :root { --cols: 3; --rows: 3; }
+      html, body { margin: 0; padding: 0; background: #cfd5de; }
+      .sheet-meta {
+        max-width: 12in; margin: 1rem auto 0.5rem; padding: 0 1rem;
+        font: 600 0.95rem/1.4 "Segoe UI", sans-serif; color: #222;
+      }
+      .sheet {
+        width: 12in; height: 17in; margin: 0 auto 2rem; background: #fff;
+        display: grid;
+        grid-template-columns: repeat(var(--cols), 10cm);
+        grid-template-rows: repeat(var(--rows), 10cm);
+        justify-content: center; align-content: center;
+        column-gap: 0.12cm; row-gap: 0.12cm;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+      }
+      @media print {
+        html, body { background: #fff; }
+        .sheet-meta { display: none; }
+        .sheet { margin: 0; box-shadow: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <p class="sheet-meta">3×3 sheet (9 stickers) · 12" × 17" · 10×10 cm · print at 100%</p>
+    <main class="sheet" aria-label="3×3 sheet (9 stickers)">
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <img src="assets/sticker-master.jpg" alt="Déjanos una reseña en Google — Desarrollado por iAGO Digital" />
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <img src="assets/sticker-master.jpg" alt="Déjanos una reseña en Google — Desarrollado por iAGO Digital" />
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <img src="assets/sticker-master.jpg" alt="Déjanos una reseña en Google — Desarrollado por iAGO Digital" />
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <img src="assets/sticker-master.jpg" alt="Déjanos una reseña en Google — Desarrollado por iAGO Digital" />
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <img src="assets/sticker-master.jpg" alt="Déjanos una reseña en Google — Desarrollado por iAGO Digital" />
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <img src="assets/sticker-master.jpg" alt="Déjanos una reseña en Google — Desarrollado por iAGO Digital" />
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <img src="assets/sticker-master.jpg" alt="Déjanos una reseña en Google — Desarrollado por iAGO Digital" />
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <img src="assets/sticker-master.jpg" alt="Déjanos una reseña en Google — Desarrollado por iAGO Digital" />
+</article>
+
+      <article class="sticker" aria-label="Tarjeta de reseña Google">
+  <img src="assets/sticker-master.jpg" alt="Déjanos una reseña en Google — Desarrollado por iAGO Digital" />
+</article>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+/* 10cm sticker tiles printed from the product master artwork */
+
+* {
+  box-sizing: border-box;
+}
+
+.sticker {
+  width: 10cm;
+  height: 10cm;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0.55cm;
+  overflow: hidden;
+  background: #fff;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.sticker img {
+  width: 10cm;
+  height: 10cm;
+  display: block;
+  object-fit: cover;
+}
