@@ -52,16 +52,15 @@ export async function GET(
     return redirectTo(DEFAULT_QR_FALLBACK_URL);
   }
 
-  let destination: string;
   try {
     const parsed = parseDestinationUrl(resolved.destinationUrl, resolved.destinationType);
     if (!parsed) {
       return redirectTo(DEFAULT_QR_FALLBACK_URL);
     }
-    destination = parsed;
+    return redirectTo(parsed);
   } catch {
-    return notFound();
+    // Misconfigured type/URL pairs (e.g. Website URL saved as Google Reviews) must
+    // still open something printable/testable instead of a dead 404.
+    return redirectTo(DEFAULT_QR_FALLBACK_URL);
   }
-
-  return redirectTo(destination);
 }
