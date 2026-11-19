@@ -2,7 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EditDestinationForm } from "@/components/destination-forms";
 import { QrCode } from "@/components/qr-code";
-import { DESTINATION_TYPE_LABELS, destinationStatusLabel } from "@/domain/qr-redirect";
+import {
+  DESTINATION_TYPE_LABELS,
+  destinationStatusLabel,
+  effectiveQrDestinationUrl,
+  normalizeQrDestinationForEdit,
+} from "@/domain/qr-redirect";
 import { qrPublicOrigin } from "@/lib/public-request";
 import { listBusinesses } from "@/server/queries";
 import { getQrRedirect } from "@/server/qr-redirects";
@@ -28,6 +33,14 @@ export default async function DestinationDetailPage({
   }
 
   const permanentUrl = `${origin}/go/${destination.code}`;
+  const opensUrl = effectiveQrDestinationUrl(
+    destination.destinationUrl,
+    destination.destinationType,
+  );
+  const editValues = normalizeQrDestinationForEdit(
+    destination.destinationUrl,
+    destination.destinationType,
+  );
   const businessOptions = businesses.map((business) => ({
     value: business.id,
     label: business.name,
@@ -39,9 +52,16 @@ export default async function DestinationDetailPage({
         <div>
           <h2 className="font-heading text-3xl">{destination.businessName}</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            {DESTINATION_TYPE_LABELS[destination.destinationType]} · {destinationStatusLabel(destination.status)}
+            {DESTINATION_TYPE_LABELS[editValues.destinationType]} ·{" "}
+            {destinationStatusLabel(destination.status)}
           </p>
           <p className="mt-3 break-all text-sm">Permanent QR URL: {permanentUrl}</p>
+          <p className="mt-2 break-all text-sm">
+            Scanners open:{" "}
+            <a href={opensUrl} target="_blank" rel="noreferrer" className="underline">
+              {opensUrl}
+            </a>
+          </p>
           <a href={permanentUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-sm underline">
             Test destination
           </a>
@@ -50,8 +70,8 @@ export default async function DestinationDetailPage({
           id={destination.id}
           businessName={destination.businessName}
           businessId={destination.businessId}
-          destinationType={destination.destinationType}
-          destinationUrl={destination.destinationUrl}
+          destinationType={editValues.destinationType}
+          destinationUrl={editValues.destinationUrl}
           status={destination.status}
           businessOptions={businessOptions}
         />

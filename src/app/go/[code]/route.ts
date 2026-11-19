@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import {
-  DEFAULT_QR_FALLBACK_URL,
+  effectiveQrDestinationUrl,
   isQrRedirectCode,
-  parseDestinationUrl,
 } from "@/domain/qr-redirect";
 import { resolveQrRedirect } from "@/server/qr-redirects";
 
@@ -48,19 +47,7 @@ export async function GET(
     return notFound();
   }
 
-  if (!resolved.destinationUrl || resolved.placeholder) {
-    return redirectTo(DEFAULT_QR_FALLBACK_URL);
-  }
-
-  try {
-    const parsed = parseDestinationUrl(resolved.destinationUrl, resolved.destinationType);
-    if (!parsed) {
-      return redirectTo(DEFAULT_QR_FALLBACK_URL);
-    }
-    return redirectTo(parsed);
-  } catch {
-    // Misconfigured type/URL pairs (e.g. Website URL saved as Google Reviews) must
-    // still open something printable/testable instead of a dead 404.
-    return redirectTo(DEFAULT_QR_FALLBACK_URL);
-  }
+  return redirectTo(
+    effectiveQrDestinationUrl(resolved.destinationUrl, resolved.destinationType),
+  );
 }
