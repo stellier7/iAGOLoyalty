@@ -58,12 +58,14 @@ const MESSAGES: Record<string, string> = {
 };
 
 export function isNextRedirect(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "digest" in error &&
-    String((error as { digest: unknown }).digest).startsWith("NEXT_REDIRECT")
-  );
+  if (typeof error !== "object" || error === null) {
+    return false;
+  }
+  if ("digest" in error && String((error as { digest: unknown }).digest).startsWith("NEXT_REDIRECT")) {
+    return true;
+  }
+  // Some Next runtimes surface only the message.
+  return error instanceof Error && error.message.startsWith("NEXT_REDIRECT");
 }
 
 export function toActionError(error: unknown): string {

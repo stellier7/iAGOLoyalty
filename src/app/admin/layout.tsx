@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AppFrame } from "@/components/app-frame";
 import { AuthShell } from "@/components/auth-shell";
+import { isNextRedirect } from "@/lib/errors";
 import { requireAdmin } from "@/server/workspace";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -23,14 +24,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </AppFrame>
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown admin error";
-    // Next redirect() throws; rethrow those.
-    if (typeof error === "object" && error && "digest" in error) {
-      const digest = String((error as { digest?: string }).digest ?? "");
-      if (digest.startsWith("NEXT_REDIRECT")) {
-        throw error;
-      }
+    if (isNextRedirect(error)) {
+      throw error;
     }
+    const message = error instanceof Error ? error.message : "Unknown admin error";
     return (
       <AuthShell
         title="Admin failed to load"

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/auth-shell";
+import { isNextRedirect } from "@/lib/errors";
 import { readBusinessId, writeBusinessId } from "@/lib/session";
 import { currentUserId } from "@/server/current-user";
 import { getProfile, listMemberships } from "@/server/queries";
@@ -41,6 +42,10 @@ export default async function EnterPage() {
       </AuthShell>
     );
   } catch (error) {
+    // redirect() throws; never render that as a Neon/DB failure.
+    if (isNextRedirect(error)) {
+      throw error;
+    }
     const detail = error instanceof Error ? error.message : "Unknown database error";
     return (
       <AuthShell
