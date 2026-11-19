@@ -28,8 +28,8 @@ export function AppFrame({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-svh bg-bone md:grid md:grid-cols-[16.5rem_minmax(0,1fr)]">
-      <aside className="hidden border-r border-ink-line bg-ink text-bone md:flex md:min-h-svh md:flex-col">
+    <div className="min-h-screen bg-bone md:grid md:grid-cols-[16.5rem_minmax(0,1fr)]">
+      <aside className="hidden border-r border-ink-line bg-ink text-bone md:flex md:min-h-screen md:flex-col">
         <div className="px-5 py-6">
           <IagoMark
             href={area === "Platform" ? "/admin" : "/app"}
@@ -44,7 +44,7 @@ export function AppFrame({
         </div>
       </aside>
       <div className="flex min-h-full min-w-0 flex-col">
-        <header className="flex items-center gap-3 border-b border-ink/10 bg-bone/80 px-4 py-3 backdrop-blur-md md:px-8">
+        <header className="flex items-center gap-3 border-b border-ink/10 bg-bone px-4 py-3 md:px-8">
           <details className="md:hidden">
             <summary className="cursor-pointer list-none text-sm font-medium text-ink">Menu</summary>
             <div className="absolute left-4 right-4 z-20 mt-2 rounded-xl border border-ink/10 bg-bone p-2 text-ink shadow-none">
