@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import {
+  DEFAULT_QR_FALLBACK_URL,
+  DESTINATION_TYPES,
   isQrRedirectCode,
   parseDestinationUrl,
 } from "./qr-redirect.ts";
@@ -59,5 +61,15 @@ describe("qr redirect destination URLs", () => {
   test("allows an empty destination so the QR can be printed first", () => {
     assert.equal(parseDestinationUrl("", "google_reviews"), null);
     assert.equal(parseDestinationUrl("   ", "custom"), null);
+  });
+
+  test("defaults unset QRs to the iAGO marketing site, with website first among types", () => {
+    assert.equal(DEFAULT_QR_FALLBACK_URL, "https://iagodigital.com");
+    assert.equal(DESTINATION_TYPES[0], "website");
+    assert.ok(DESTINATION_TYPES.includes("instagram"));
+    assert.equal(
+      parseDestinationUrl("https://iagodigital.com/", "website"),
+      "https://iagodigital.com/",
+    );
   });
 });

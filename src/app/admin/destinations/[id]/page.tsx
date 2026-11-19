@@ -64,7 +64,7 @@ export default async function DestinationDetailPage({
         <p className="text-sm leading-6 text-muted-foreground">
           {destination.destinationUrl
             ? "Print this QR. Customers land directly on the destination URL."
-            : "Print this QR now. Until a destination is set, scanners open the iAGO home page."}
+            : "Print this QR now. Until a destination is set, scanners open iagodigital.com."}
         </p>
       </div>
     </div>

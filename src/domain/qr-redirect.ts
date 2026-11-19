@@ -1,8 +1,8 @@
 export const DESTINATION_TYPES = [
-  "google_reviews",
-  "whatsapp",
-  "instagram",
   "website",
+  "google_reviews",
+  "instagram",
+  "whatsapp",
   "custom",
 ] as const;
 
@@ -11,11 +11,14 @@ export type DestinationType = (typeof DESTINATION_TYPES)[number];
 export const DESTINATION_STATUSES = ["active", "inactive"] as const;
 export type DestinationStatus = (typeof DESTINATION_STATUSES)[number];
 
+/** Used when a permanent QR has no destination URL yet. */
+export const DEFAULT_QR_FALLBACK_URL = "https://iagodigital.com";
+
 export const DESTINATION_TYPE_LABELS: Record<DestinationType, string> = {
-  google_reviews: "Google Reviews",
-  whatsapp: "WhatsApp",
-  instagram: "Instagram",
   website: "Website",
+  google_reviews: "Google Reviews",
+  instagram: "Instagram",
+  whatsapp: "WhatsApp",
   custom: "Custom URL",
 };
 

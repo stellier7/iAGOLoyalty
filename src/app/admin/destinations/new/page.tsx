@@ -19,7 +19,7 @@ export default async function NewDestinationPage() {
         <h2 className="font-heading text-3xl">New QR destination</h2>
         <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
           Create one or many permanent `/go/` codes. Leave the destination blank to print first; scanners go
-          to the iAGO home page until you set Google.
+          to iagodigital.com until you set Website, Google Reviews, Instagram, WhatsApp, or a custom URL.
         </p>
       </div>
       <CreateDestinationForm businessOptions={businessOptions} />

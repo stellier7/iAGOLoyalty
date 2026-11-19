@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { isQrRedirectCode, parseDestinationUrl } from "@/domain/qr-redirect";
+import {
+  DEFAULT_QR_FALLBACK_URL,
+  isQrRedirectCode,
+  parseDestinationUrl,
+} from "@/domain/qr-redirect";
 import { resolveQrRedirect } from "@/server/qr-redirects";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +34,7 @@ function redirectTo(destination: string) {
 }
 
 export async function GET(
-  request: Request,
+  _request: Request,
   context: { params: Promise<{ code: string }> },
 ) {
   const { code: rawCode } = await context.params;
@@ -45,14 +49,14 @@ export async function GET(
   }
 
   if (!resolved.destinationUrl || resolved.placeholder) {
-    return redirectTo(new URL("/", request.url).toString());
+    return redirectTo(DEFAULT_QR_FALLBACK_URL);
   }
 
   let destination: string;
   try {
     const parsed = parseDestinationUrl(resolved.destinationUrl, resolved.destinationType);
     if (!parsed) {
-      return redirectTo(new URL("/", request.url).toString());
+      return redirectTo(DEFAULT_QR_FALLBACK_URL);
     }
     destination = parsed;
   } catch {
