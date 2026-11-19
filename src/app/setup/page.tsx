@@ -1,6 +1,5 @@
-import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/auth-shell";
-import { SetupForm } from "@/components/credential-forms";
+import { ResetAdminPasswordForm, SetupForm } from "@/components/credential-forms";
 import { getDataMode } from "@/lib/config";
 import { platformHasSuperAdmin } from "@/server/accounts";
 
@@ -10,8 +9,16 @@ export const dynamic = "force-dynamic";
 export default async function SetupPage() {
   const mode = getDataMode();
   const hasAdmin = mode === "unconfigured" ? null : await platformHasSuperAdmin();
+
   if (hasAdmin) {
-    redirect("/login");
+    return (
+      <AuthShell
+        title="Reset admin password"
+        description="A platform admin already exists. Use the SETUP_TOKEN from Vercel to set a new password, then sign in."
+      >
+        <ResetAdminPasswordForm />
+      </AuthShell>
+    );
   }
 
   return (

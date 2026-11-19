@@ -14,6 +14,7 @@ import {
   createLocalUser,
   createSupabaseUser,
   promoteFirstLocalSuperAdmin,
+  resetLocalSuperAdminPassword,
   verifyLocalLogin,
 } from "@/server/accounts";
 import { currentUserId } from "@/server/current-user";
@@ -141,6 +142,37 @@ export async function setupAction(_state: ActionState, formData: FormData): Prom
   }
 
   return { redirectTo: "/admin" };
+}
+
+export async function resetAdminPasswordAction(
+  _state: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const expected = (process.env["SETUP_TOKEN"] ?? "").trim();
+  const provided = String(formData.get("setupToken") ?? "");
+  if (!expected || !setupTokensMatch(provided, expected)) {
+    return { error: "The setup token does not match." };
+  }
+
+  const email = String(formData.get("email") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+  if (!email.includes("@") || password.length < 10) {
+    return { error: "Enter the admin email and a password with at least 10 characters." };
+  }
+
+  try {
+    if (accountMode() !== "database") {
+      return { error: "Password reset is only available for the hosted database login." };
+    }
+    const updated = await resetLocalSuperAdminPassword(email, password);
+    if (!updated) {
+      return { error: "No super admin exists for that email." };
+    }
+  } catch (error) {
+    return { error: toActionError(error) };
+  }
+
+  return { redirectTo: "/login?reset=1" };
 }
 
 export async function acceptInvitationAction(

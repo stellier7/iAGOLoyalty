@@ -1,8 +1,17 @@
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
+import type { NextResponse } from "next/server";
 
 const SESSION_COOKIE = "iago_session";
 const BUSINESS_COOKIE = "iago_business";
+
+const SESSION_COOKIE_OPTIONS = {
+  httpOnly: true,
+  sameSite: "lax" as const,
+  secure: process.env.NODE_ENV === "production",
+  path: "/",
+  maxAge: 60 * 60 * 24 * 14,
+};
 
 function sessionKey() {
   const secret = (process.env["SESSION_SECRET"] ?? "").trim();
@@ -36,13 +45,12 @@ export async function readSessionUserId(): Promise<string | null> {
 
 export async function writeSession(userId: string) {
   const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE, await signSession(userId), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 14,
-  });
+  cookieStore.set(SESSION_COOKIE, await signSession(userId), SESSION_COOKIE_OPTIONS);
+}
+
+/** Attach session cookie to a Route Handler redirect (Safari-safe classic POST). */
+export async function attachSessionCookie(response: NextResponse, userId: string) {
+  response.cookies.set(SESSION_COOKIE, await signSession(userId), SESSION_COOKIE_OPTIONS);
 }
 
 export async function clearSession() {
@@ -58,13 +66,11 @@ export async function readBusinessId(): Promise<string | null> {
 
 export async function writeBusinessId(businessId: string) {
   const cookieStore = await cookies();
-  cookieStore.set(BUSINESS_COOKIE, businessId, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 14,
-  });
+  cookieStore.set(BUSINESS_COOKIE, businessId, SESSION_COOKIE_OPTIONS);
+}
+
+export function attachBusinessCookie(response: NextResponse, businessId: string) {
+  response.cookies.set(BUSINESS_COOKIE, businessId, SESSION_COOKIE_OPTIONS);
 }
 
 export function safeNextPath(value: FormDataEntryValue | null): string | null {
