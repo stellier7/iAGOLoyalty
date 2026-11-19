@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { businessDraftSchema } from "@/domain/business-draft";
 import { isBusinessSlug, slugifyBusinessName } from "@/domain/slug";
 import { EMPLOYEE_PERMISSIONS, isBusinessRole, type PermissionMap } from "@/domain/permissions";
-import { accountMode, getDataMode } from "@/lib/config";
+import { accountMode, getDataMode, unconfiguredAuthMessage } from "@/lib/config";
 import { toActionError } from "@/lib/errors";
 import { clearSession, safeNextPath, writeBusinessId, writeSession } from "@/lib/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -62,7 +62,7 @@ export async function loginAction(_state: ActionState, formData: FormData): Prom
         break;
       }
       case "unconfigured":
-        return { error: "Authentication is not configured yet." };
+        return { error: unconfiguredAuthMessage() };
       default: {
         const unknown: never = mode;
         return { error: unknown };
@@ -97,7 +97,7 @@ export async function loginAction(_state: ActionState, formData: FormData): Prom
 }
 
 export async function setupAction(_state: ActionState, formData: FormData): Promise<ActionState> {
-  const expected = process.env.SETUP_TOKEN;
+  const expected = (process.env["SETUP_TOKEN"] ?? "").trim();
   const provided = String(formData.get("setupToken") ?? "");
   if (!expected || !setupTokensMatch(provided, expected)) {
     return { error: "The setup token does not match." };
@@ -183,7 +183,7 @@ export async function acceptInvitationAction(
           break;
         }
         case "unconfigured":
-          return { error: "Authentication is not configured yet." };
+          return { error: unconfiguredAuthMessage() };
         default: {
           const unknown: never = mode;
           return { error: unknown };

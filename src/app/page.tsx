@@ -16,11 +16,8 @@ export default async function HomePage() {
   const hasAdmin = mode === "unconfigured" ? null : await platformHasSuperAdmin();
 
   return (
-    <main className="iago-home-shell relative min-h-svh overflow-hidden">
-      <div className="pointer-events-none absolute -right-24 top-10 size-[28rem] rounded-full bg-coral/15 blur-3xl" />
-      <div className="pointer-events-none absolute -left-16 bottom-0 size-[22rem] rounded-full bg-ink/5 blur-3xl" />
-
-      <div className="relative mx-auto flex min-h-svh w-full max-w-5xl flex-col px-6 py-10 md:py-14">
+    <main className="iago-home-shell relative min-h-screen">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 py-10 md:py-14">
         <header className="flex items-center justify-between gap-4">
           <IagoMark href="/" size="md" />
           <Link

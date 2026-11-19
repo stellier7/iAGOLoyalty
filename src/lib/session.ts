@@ -5,8 +5,8 @@ const SESSION_COOKIE = "iago_session";
 const BUSINESS_COOKIE = "iago_business";
 
 function sessionKey() {
-  const secret = process.env.SESSION_SECRET;
-  if (!secret || secret.length < 32) {
+  const secret = (process.env["SESSION_SECRET"] ?? "").trim();
+  if (secret.length < 32) {
     throw new Error("SESSION_SECRET must be at least 32 characters.");
   }
   return new TextEncoder().encode(secret);
