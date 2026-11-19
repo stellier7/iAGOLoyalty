@@ -98,6 +98,8 @@ try {
   }
 
   await sql.unsafe(ownerFunctions);
+  // Re-assert role membership every deploy — Neon owners need SET ROLE for RLS.
+  await sql.unsafe(roleSetup);
   await sql`select pg_advisory_unlock(7272741)`;
 } finally {
   await sql.end({ timeout: 5 });

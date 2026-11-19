@@ -25,6 +25,11 @@ export function hostedDatabaseUrlUnpooled(): string | null {
   return value || null;
 }
 
+/** True only when Neon/direct unpooled env is present (not merely falling back to pooled). */
+export function hasDedicatedUnpooledDatabaseUrl(): boolean {
+  return Boolean(env("DATABASE_URL_UNPOOLED") || env("POSTGRES_URL_NON_POOLING"));
+}
+
 export function sessionSecretValue(): string {
   return env("SESSION_SECRET");
 }
