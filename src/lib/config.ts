@@ -9,27 +9,24 @@ export type AuthConfigReport = {
   missing: string[];
 };
 
+/** Read server env at request time (avoid static `process.env.NAME` inlining). */
+function env(name: string): string {
+  return (process.env[name] ?? "").trim();
+}
+
 /** Prefer app names; fall back to Vercel Neon Storage names. */
 export function hostedDatabaseUrl(): string | null {
-  const value =
-    process.env.DATABASE_URL?.trim() ||
-    process.env.POSTGRES_URL?.trim() ||
-    process.env.POSTGRES_PRISMA_URL?.trim() ||
-    "";
+  const value = env("DATABASE_URL") || env("POSTGRES_URL") || env("POSTGRES_PRISMA_URL");
   return value || null;
 }
 
 export function hostedDatabaseUrlUnpooled(): string | null {
-  const value =
-    process.env.DATABASE_URL_UNPOOLED?.trim() ||
-    process.env.POSTGRES_URL_NON_POOLING?.trim() ||
-    hostedDatabaseUrl() ||
-    "";
+  const value = env("DATABASE_URL_UNPOOLED") || env("POSTGRES_URL_NON_POOLING") || hostedDatabaseUrl() || "";
   return value || null;
 }
 
 export function sessionSecretValue(): string {
-  return process.env.SESSION_SECRET?.trim() ?? "";
+  return env("SESSION_SECRET");
 }
 
 export function describeAuthConfig(mode: DataMode = getDataMode()): AuthConfigReport {
@@ -75,15 +72,15 @@ export function unconfiguredAuthMessage(report: AuthConfigReport = describeAuthC
 }
 
 export function getDataMode(): DataMode {
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  if (env("NEXT_PUBLIC_SUPABASE_URL") && env("NEXT_PUBLIC_SUPABASE_ANON_KEY")) {
     return "supabase";
   }
 
   const secret = sessionSecretValue();
   if (
-    process.env.NODE_ENV !== "production" &&
-    process.env.LOCAL_DATABASE_URL &&
-    process.env.LOCAL_DATABASE_ADMIN_URL &&
+    env("NODE_ENV") !== "production" &&
+    env("LOCAL_DATABASE_URL") &&
+    env("LOCAL_DATABASE_ADMIN_URL") &&
     secret.length >= 32
   ) {
     return "local";

@@ -97,7 +97,7 @@ export async function loginAction(_state: ActionState, formData: FormData): Prom
 }
 
 export async function setupAction(_state: ActionState, formData: FormData): Promise<ActionState> {
-  const expected = process.env.SETUP_TOKEN;
+  const expected = (process.env["SETUP_TOKEN"] ?? "").trim();
   const provided = String(formData.get("setupToken") ?? "");
   if (!expected || !setupTokensMatch(provided, expected)) {
     return { error: "The setup token does not match." };
