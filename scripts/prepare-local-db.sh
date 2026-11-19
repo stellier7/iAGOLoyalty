@@ -16,8 +16,8 @@ begin
 end
 $$;
 alter role iago_app with login password 'iago_local_dev_only' noinherit;
-grant authenticated to iago_app;
-grant anon to iago_app;
+grant authenticated to iago_app with set true, inherit false;
+grant anon to iago_app with set true, inherit false;
 select 'create database iago_loyalty' where not exists (select 1 from pg_database where datname = 'iago_loyalty')\gexec
 select 'create database iago_loyalty_test' where not exists (select 1 from pg_database where datname = 'iago_loyalty_test')\gexec
 grant connect on database iago_loyalty to iago_app;

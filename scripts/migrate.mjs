@@ -12,8 +12,12 @@ if (url === "") {
   process.exit(0);
 }
 
+// PG16+ membership can exist with SET false (Neon Data API does this).
+// Always re-grant WITH SET TRUE so `SET LOCAL ROLE authenticated` works.
 const roleSetup = `
 do $iago_roles$
+declare
+  can_set boolean;
 begin
   if not exists (select 1 from pg_roles where rolname = 'anon') then
     create role anon nologin;
@@ -21,12 +25,42 @@ begin
   if not exists (select 1 from pg_roles where rolname = 'authenticated') then
     create role authenticated nologin;
   end if;
-  if not pg_has_role(current_user, 'anon', 'member') then
-    grant anon to current_user;
-  end if;
-  if not pg_has_role(current_user, 'authenticated', 'member') then
-    grant authenticated to current_user;
-  end if;
+
+  begin
+    execute 'grant anon to current_user with set true, inherit false';
+  exception
+    when insufficient_privilege then
+      select exists (
+        select 1
+        from pg_auth_members m
+        join pg_roles r on r.oid = m.roleid
+        join pg_roles u on u.oid = m.member
+        where r.rolname = 'anon'
+          and u.rolname = current_user
+          and m.set_option
+      ) into can_set;
+      if not coalesce(can_set, false) then
+        raise exception 'iago: % cannot SET ROLE anon (need GRANT anon TO CURRENT_USER WITH SET TRUE)', current_user;
+      end if;
+  end;
+
+  begin
+    execute 'grant authenticated to current_user with set true, inherit false';
+  exception
+    when insufficient_privilege then
+      select exists (
+        select 1
+        from pg_auth_members m
+        join pg_roles r on r.oid = m.roleid
+        join pg_roles u on u.oid = m.member
+        where r.rolname = 'authenticated'
+          and u.rolname = current_user
+          and m.set_option
+      ) into can_set;
+      if not coalesce(can_set, false) then
+        raise exception 'iago: % cannot SET ROLE authenticated (need GRANT authenticated TO CURRENT_USER WITH SET TRUE)', current_user;
+      end if;
+  end;
 end
 $iago_roles$;
 `;

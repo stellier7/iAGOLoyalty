@@ -113,8 +113,9 @@ test("hosted database can create the admin and Perfumes y Belleza under row secu
     end
     $$;
   `;
-  await root`grant anon to hosted_owner`;
-  await root`grant authenticated to hosted_owner`;
+  // ADMIN OPTION lets migrate re-assert WITH SET TRUE (Neon PG16 membership flags).
+  await root`grant anon to hosted_owner with admin option, set true, inherit false`;
+  await root`grant authenticated to hosted_owner with admin option, set true, inherit false`;
   await root`
     select pg_terminate_backend(pid)
     from pg_stat_activity
@@ -196,6 +197,74 @@ test("hosted database can create the admin and Perfumes y Belleza under row secu
       where datname = 'iago_hosted_test' and pid <> pg_backend_pid()
     `;
     await cleanup.unsafe("drop database if exists iago_hosted_test");
+    await cleanup.end();
+  }
+});
+
+test("re-grant WITH SET TRUE restores SET ROLE after Neon-style SET false membership", async () => {
+  const setRoleUrl =
+    "postgres://hosted_owner:hosted_owner_test@127.0.0.1:5432/iago_set_role_test";
+  const root = postgres(superUrl, { max: 1, prepare: false });
+  await root`
+    do $$
+    begin
+      if not exists (select 1 from pg_roles where rolname = 'hosted_owner') then
+        create role hosted_owner login password 'hosted_owner_test' nosuperuser;
+      end if;
+      if not exists (select 1 from pg_roles where rolname = 'authenticated') then
+        create role authenticated nologin;
+      end if;
+      if not exists (select 1 from pg_roles where rolname = 'anon') then
+        create role anon nologin;
+      end if;
+    end
+    $$;
+  `;
+  // Simulate Neon Data API: member without SET privilege, but with ADMIN so the app can heal.
+  await root`revoke authenticated from hosted_owner cascade`;
+  await root`revoke anon from hosted_owner cascade`;
+  await root`grant authenticated to hosted_owner with admin option, set false, inherit true`;
+  await root`grant anon to hosted_owner with admin option, set false, inherit true`;
+  await root`
+    select pg_terminate_backend(pid)
+    from pg_stat_activity
+    where datname = 'iago_set_role_test' and pid <> pg_backend_pid()
+  `;
+  await root.unsafe("drop database if exists iago_set_role_test");
+  await root.unsafe("create database iago_set_role_test owner hosted_owner");
+  await root.end();
+
+  const db = postgres(setRoleUrl, { max: 1, prepare: false });
+  try {
+    await assert.rejects(
+      db.begin(async (tx) => {
+        await tx.unsafe("set local role authenticated");
+        return tx`select 1`;
+      }),
+      /permission denied to set role/i,
+    );
+
+    // Same grant shape migrate / ensureAppRoleGrants apply on every deploy / first request.
+    await db.unsafe(`
+      grant anon to current_user with set true, inherit false;
+      grant authenticated to current_user with set true, inherit false;
+    `);
+
+    const ok = await db.begin(async (tx) => {
+      await tx.unsafe("set local role authenticated");
+      const rows = await tx<{ current_user: string }[]>`select current_user`;
+      return rows[0]?.current_user;
+    });
+    assert.equal(ok, "authenticated");
+  } finally {
+    await db.end();
+    const cleanup = postgres(superUrl, { max: 1, prepare: false });
+    await cleanup`
+      select pg_terminate_backend(pid)
+      from pg_stat_activity
+      where datname = 'iago_set_role_test' and pid <> pg_backend_pid()
+    `;
+    await cleanup.unsafe("drop database if exists iago_set_role_test");
     await cleanup.end();
   }
 });
