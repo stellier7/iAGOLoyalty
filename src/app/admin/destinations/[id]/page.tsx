@@ -62,7 +62,9 @@ export default async function DestinationDetailPage({
       <div className="grid gap-3">
         <QrCode value={permanentUrl} label={`QR for ${destination.businessName}`} />
         <p className="text-sm leading-6 text-muted-foreground">
-          Print this QR. Customers land directly on the destination URL with no iAGO landing page.
+          {destination.destinationUrl
+            ? "Print this QR. Customers land directly on the destination URL."
+            : "Print this QR now. Until a destination is set, scanners open the iAGO home page."}
         </p>
       </div>
     </div>

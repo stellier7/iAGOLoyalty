@@ -18,7 +18,7 @@ export type QrRedirectRecord = {
   businessName: string;
   businessId: string | null;
   destinationType: DestinationType;
-  destinationUrl: string;
+  destinationUrl: string | null;
   status: DestinationStatus;
   createdAt: string;
   updatedAt: string;
@@ -26,8 +26,9 @@ export type QrRedirectRecord = {
 
 export type ResolvedQrRedirect = {
   code: string;
-  destinationUrl: string;
+  destinationUrl: string | null;
   destinationType: DestinationType;
+  placeholder: boolean;
 };
 
 type RedirectRow = {
@@ -36,7 +37,7 @@ type RedirectRow = {
   business_name: string;
   business_id: string | null;
   destination_type: string;
-  destination_url: string;
+  destination_url: string | null;
   status: string;
   created_at: string | Date;
   updated_at: string | Date;
@@ -123,16 +124,22 @@ function mapResolved(raw: unknown): ResolvedQrRedirect | null {
   }
   const row = raw as {
     code?: string;
-    destination_url?: string;
+    destination_url?: string | null;
     destination_type?: string;
+    placeholder?: boolean;
   };
-  if (!row.code || !row.destination_url || !row.destination_type || !isDestinationType(row.destination_type)) {
+  if (!row.code || !row.destination_type || !isDestinationType(row.destination_type)) {
     return null;
   }
+  const destinationUrl =
+    typeof row.destination_url === "string" && row.destination_url.trim()
+      ? row.destination_url
+      : null;
   return {
     code: row.code,
-    destinationUrl: row.destination_url,
+    destinationUrl,
     destinationType: row.destination_type,
+    placeholder: destinationUrl === null || row.placeholder === true,
   };
 }
 
@@ -141,7 +148,7 @@ export async function createQrRedirect(
   input: {
     businessName: string;
     destinationType: DestinationType;
-    destinationUrl: string;
+    destinationUrl: string | null;
     status: DestinationStatus;
     code?: string | null;
     businessId?: string | null;
@@ -178,13 +185,52 @@ export async function createQrRedirect(
   return mapRpcResult(rows[0]?.create_qr_redirect);
 }
 
+export async function createQrRedirectBatch(
+  userId: string,
+  input: {
+    count: number;
+    businessName: string;
+    destinationType: DestinationType;
+    status: DestinationStatus;
+    businessId?: string | null;
+  },
+): Promise<string[]> {
+  if (getDataMode() === "supabase") {
+    const client = await createSupabaseServerClient();
+    const { data, error } = await client.rpc("create_qr_redirect_batch", {
+      p_count: input.count,
+      p_business_name: input.businessName,
+      p_destination_type: input.destinationType,
+      p_status: input.status,
+      p_business_id: input.businessId ?? null,
+    });
+    if (error) {
+      throw new Error(error.message);
+    }
+    return mapBatchResult(data);
+  }
+
+  const rows = await withUser(userId, (tx) =>
+    tx<{ create_qr_redirect_batch: { codes?: string[] } }[]>`
+      select public.create_qr_redirect_batch(
+        ${input.count},
+        ${input.businessName},
+        ${input.destinationType},
+        ${input.status},
+        ${input.businessId ?? null}::uuid
+      ) as create_qr_redirect_batch
+    `,
+  );
+  return mapBatchResult(rows[0]?.create_qr_redirect_batch);
+}
+
 export async function updateQrRedirect(
   userId: string,
   id: string,
   input: {
     businessName: string;
     destinationType: DestinationType;
-    destinationUrl: string;
+    destinationUrl: string | null;
     status: DestinationStatus;
     businessId?: string | null;
   },
@@ -220,6 +266,17 @@ export async function updateQrRedirect(
   return mapRpcResult(rows[0]?.update_qr_redirect);
 }
 
+function mapBatchResult(raw: unknown): string[] {
+  if (!raw || typeof raw !== "object") {
+    throw new Error("iago:not_found");
+  }
+  const codes = (raw as { codes?: unknown }).codes;
+  if (!Array.isArray(codes) || !codes.every((code) => typeof code === "string")) {
+    throw new Error("iago:not_found");
+  }
+  return codes;
+}
+
 function mapRpcResult(raw: unknown): QrRedirectRecord {
   if (!raw || typeof raw !== "object") {
     throw new Error("iago:not_found");
@@ -230,7 +287,7 @@ function mapRpcResult(raw: unknown): QrRedirectRecord {
     business_name: string;
     business_id: string | null;
     destination_type: string;
-    destination_url: string;
+    destination_url: string | null;
     status: string;
   };
   return mapRow({
@@ -239,7 +296,7 @@ function mapRpcResult(raw: unknown): QrRedirectRecord {
     business_name: row.business_name,
     business_id: row.business_id,
     destination_type: row.destination_type,
-    destination_url: row.destination_url,
+    destination_url: row.destination_url ?? null,
     status: row.status,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),

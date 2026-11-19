@@ -66,7 +66,14 @@ function assertHttpUrl(raw: string): URL {
   return url;
 }
 
-export function parseDestinationUrl(raw: string, type: DestinationType = "custom"): string {
+export function parseDestinationUrl(
+  raw: string,
+  type: DestinationType = "custom",
+): string | null {
+  if (!raw.trim()) {
+    return null;
+  }
+
   const url = assertHttpUrl(raw);
   const href = url.toString();
 

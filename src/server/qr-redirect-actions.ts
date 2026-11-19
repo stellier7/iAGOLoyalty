@@ -10,7 +10,11 @@ import {
 } from "@/domain/qr-redirect";
 import { isNextRedirect, toActionError } from "@/lib/errors";
 import { currentUserId } from "@/server/current-user";
-import { createQrRedirect, updateQrRedirect } from "@/server/qr-redirects";
+import {
+  createQrRedirect,
+  createQrRedirectBatch,
+  updateQrRedirect,
+} from "@/server/qr-redirects";
 import { getProfile } from "@/server/queries";
 import type { ActionState } from "@/server/types";
 
@@ -67,6 +71,30 @@ export async function createDestinationAction(
 
   try {
     const fields = readDestinationFields(formData);
+    const countRaw = String(formData.get("count") ?? "1").trim();
+    const count = Number.parseInt(countRaw, 10);
+    if (!Number.isFinite(count) || count < 1 || count > 50) {
+      return { error: "Create between 1 and 50 QR codes at a time." };
+    }
+
+    if (count > 1) {
+      if (fields.code) {
+        return { error: "Leave the permanent QR code blank when creating more than one." };
+      }
+      if (fields.destinationUrl) {
+        return { error: "Batch QR codes start empty. Set each Google link after they are created." };
+      }
+      await createQrRedirectBatch(userId, {
+        count,
+        businessName: fields.businessName,
+        destinationType: fields.destinationType,
+        status: fields.status,
+        businessId: fields.businessId,
+      });
+      revalidatePath("/admin/destinations");
+      redirect("/admin/destinations");
+    }
+
     const created = await createQrRedirect(userId, fields);
     revalidatePath("/admin/destinations");
     redirect(`/admin/destinations/${created.id}`);

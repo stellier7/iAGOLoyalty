@@ -21,8 +21,16 @@ function notFound() {
   });
 }
 
+function redirectTo(destination: string) {
+  const response = NextResponse.redirect(destination, 307);
+  for (const [key, value] of Object.entries(NO_STORE)) {
+    response.headers.set(key, value);
+  }
+  return response;
+}
+
 export async function GET(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ code: string }> },
 ) {
   const { code: rawCode } = await context.params;
@@ -36,16 +44,20 @@ export async function GET(
     return notFound();
   }
 
+  if (!resolved.destinationUrl || resolved.placeholder) {
+    return redirectTo(new URL("/", request.url).toString());
+  }
+
   let destination: string;
   try {
-    destination = parseDestinationUrl(resolved.destinationUrl, resolved.destinationType);
+    const parsed = parseDestinationUrl(resolved.destinationUrl, resolved.destinationType);
+    if (!parsed) {
+      return redirectTo(new URL("/", request.url).toString());
+    }
+    destination = parsed;
   } catch {
     return notFound();
   }
 
-  const response = NextResponse.redirect(destination, 307);
-  for (const [key, value] of Object.entries(NO_STORE)) {
-    response.headers.set(key, value);
-  }
-  return response;
+  return redirectTo(destination);
 }

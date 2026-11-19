@@ -55,4 +55,9 @@ describe("qr redirect destination URLs", () => {
     assert.equal(isQrRedirectCode("../x"), false);
     assert.equal(isQrRedirectCode(""), false);
   });
+
+  test("allows an empty destination so the QR can be printed first", () => {
+    assert.equal(parseDestinationUrl("", "google_reviews"), null);
+    assert.equal(parseDestinationUrl("   ", "custom"), null);
+  });
 });

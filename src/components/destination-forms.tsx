@@ -32,7 +32,7 @@ export function CreateDestinationForm({
 
   return (
     <form action={action} className="grid max-w-xl gap-4">
-      <TextField label="Business name" name="businessName" required />
+      <TextField label="Business name" name="businessName" defaultValue="Perfumes y Belleza" required />
       <SelectField
         label="Linked business (optional)"
         name="businessId"
@@ -46,11 +46,18 @@ export function CreateDestinationForm({
         options={typeOptions}
       />
       <TextField
-        label="Destination URL"
+        label="How many QR codes"
+        name="count"
+        type="number"
+        defaultValue="1"
+        required
+        step="1"
+      />
+      <TextField
+        label="Destination URL (optional)"
         name="destinationUrl"
         type="url"
-        required
-        placeholder="https://search.google.com/local/writereview?placeid=..."
+        placeholder="Leave blank to print first. Scans go to the iAGO home page until you set Google."
       />
       <TextField
         label="Permanent QR code (optional)"
@@ -58,6 +65,10 @@ export function CreateDestinationForm({
         placeholder="Leave blank to assign the next code (001, 002, …)"
       />
       <SelectField label="Status" name="status" defaultValue="active" options={statusOptions} />
+      <p className="text-sm text-muted-foreground">
+        Create up to 50 empty codes at once. Each gets a permanent `/go/001` style link. Set the Google
+        review URL later without reprinting.
+      </p>
       <FormError message={state.error} />
       <SubmitButton pendingLabel="Saving…">Create destination</SubmitButton>
     </form>
@@ -77,7 +88,7 @@ export function EditDestinationForm({
   businessName: string;
   businessId: string | null;
   destinationType: DestinationType;
-  destinationUrl: string;
+  destinationUrl: string | null;
   status: DestinationStatus;
   businessOptions: readonly { value: string; label: string }[];
 }) {
@@ -99,10 +110,17 @@ export function EditDestinationForm({
         defaultValue={destinationType}
         options={typeOptions}
       />
-      <TextField label="Destination URL" name="destinationUrl" type="url" defaultValue={destinationUrl} required />
+      <TextField
+        label="Destination URL"
+        name="destinationUrl"
+        type="url"
+        defaultValue={destinationUrl ?? ""}
+        placeholder="Paste the Google review link when you have it"
+      />
       <SelectField label="Status" name="status" defaultValue={status} options={statusOptions} />
       <p className="text-sm text-muted-foreground">
         Changing the destination URL or reassigning the business does not change the permanent QR code or URL.
+        Leave the URL blank to keep sending scanners to the iAGO home page.
       </p>
       <FormError message={state.error} />
       <SubmitButton pendingLabel="Saving…">Save destination</SubmitButton>

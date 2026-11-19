@@ -190,6 +190,81 @@ test("qr redirects stay permanent while destinations change", async (t) => {
       /iago:not_authorized/,
     );
   });
+
+  await t.test("a QR can be created without a destination and resolved as a placeholder", async () => {
+    const rows = await asUser(adminId, (tx) =>
+      tx<{ create_qr_redirect: { code: string; destination_url: string | null } }[]>`
+        select public.create_qr_redirect(
+          'Perfumes y Belleza',
+          'google_reviews',
+          null,
+          'active',
+          null,
+          null
+        ) as create_qr_redirect
+      `,
+    );
+    assert.equal(rows[0].create_qr_redirect.code, "002");
+    assert.equal(rows[0].create_qr_redirect.destination_url, null);
+
+    const resolved = await asAnon((tx) =>
+      tx<{ resolve_qr_redirect: { code: string; destination_url: string | null; placeholder: boolean } | null }[]>`
+        select public.resolve_qr_redirect('002') as resolve_qr_redirect
+      `,
+    );
+    assert.equal(resolved[0].resolve_qr_redirect?.code, "002");
+    assert.equal(resolved[0].resolve_qr_redirect?.destination_url, null);
+    assert.equal(resolved[0].resolve_qr_redirect?.placeholder, true);
+  });
+
+  await t.test("batch create assigns ten permanent codes with no destination yet", async () => {
+    const rows = await asUser(adminId, (tx) =>
+      tx<{ create_qr_redirect_batch: { codes: string[] } }[]>`
+        select public.create_qr_redirect_batch(
+          10,
+          'Perfumes y Belleza',
+          'google_reviews',
+          'active',
+          null
+        ) as create_qr_redirect_batch
+      `,
+    );
+    assert.deepEqual(rows[0].create_qr_redirect_batch.codes, [
+      "003",
+      "004",
+      "005",
+      "006",
+      "007",
+      "008",
+      "009",
+      "010",
+      "011",
+      "012",
+    ]);
+  });
+
+  await t.test("a placeholder QR can later point at Google without changing the code", async () => {
+    const listed = await asUser(adminId, (tx) =>
+      tx<{ id: string }[]>`select id from public.qr_redirects where code = '002'`,
+    );
+    const updated = await asUser(adminId, (tx) =>
+      tx<{ update_qr_redirect: { code: string; destination_url: string } }[]>`
+        select public.update_qr_redirect(
+          ${listed[0].id}::uuid,
+          'Perfumes y Belleza',
+          'google_reviews',
+          'https://search.google.com/local/writereview?placeid=ChIJLive',
+          'active',
+          null
+        ) as update_qr_redirect
+      `,
+    );
+    assert.equal(updated[0].update_qr_redirect.code, "002");
+    assert.equal(
+      updated[0].update_qr_redirect.destination_url,
+      "https://search.google.com/local/writereview?placeid=ChIJLive",
+    );
+  });
 });
 
 test.after(async () => {
