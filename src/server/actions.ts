@@ -74,26 +74,26 @@ export async function loginAction(_state: ActionState, formData: FormData): Prom
 
   const nextPath = safeNextPath(formData.get("next"));
   if (nextPath) {
-    redirect(nextPath);
+    return { redirectTo: nextPath };
   }
 
   if (signedInUserId) {
     try {
       const profile = await getProfile(signedInUserId);
       if (profile?.platformRole === "super_admin") {
-        redirect("/admin");
+        return { redirectTo: "/admin" };
       }
       const memberships = await listMemberships(signedInUserId);
       if (memberships[0]) {
         await writeBusinessId(memberships[0].businessId);
-        redirect("/app");
+        return { redirectTo: "/app" };
       }
     } catch {
       // Fall through to /enter.
     }
   }
 
-  redirect("/enter");
+  return { redirectTo: "/enter" };
 }
 
 export async function setupAction(_state: ActionState, formData: FormData): Promise<ActionState> {
@@ -140,7 +140,7 @@ export async function setupAction(_state: ActionState, formData: FormData): Prom
     return { error: toActionError(error) };
   }
 
-  redirect("/admin");
+  return { redirectTo: "/admin" };
 }
 
 export async function acceptInvitationAction(
@@ -206,7 +206,7 @@ export async function acceptInvitationAction(
     return { error: toActionError(error) };
   }
 
-  redirect("/app");
+  return { redirectTo: "/app" };
 }
 
 export async function signOutAction() {

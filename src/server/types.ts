@@ -75,6 +75,8 @@ export type PlatformCounts = {
 export type ActionState = {
   error?: string;
   inviteUrl?: string;
+  /** Hard navigation target — prefer over redirect() for Safari server-action flows. */
+  redirectTo?: string;
 };
 
 export const PERMISSION_LABELS: Record<EmployeePermission, string> = {
