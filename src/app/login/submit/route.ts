@@ -42,21 +42,25 @@ export async function POST(request: Request) {
     return fail("credentials");
   }
 
-  let destination = nextPath ?? "/enter";
+  let destination = "/enter";
   let businessId: string | null = null;
   try {
     const profile = await getProfile(userId);
     if (profile?.platformRole === "super_admin") {
-      destination = nextPath ?? "/admin";
+      destination = "/admin";
     } else {
       const memberships = await listMemberships(userId);
       if (memberships[0]) {
         businessId = memberships[0].businessId;
-        destination = nextPath ?? "/app";
+        destination = "/app";
       }
     }
   } catch {
-    destination = nextPath ?? "/enter";
+    // Profile lookup can fail if DB roles are misconfigured; still land somewhere.
+    destination = "/enter";
+  }
+  if (nextPath) {
+    destination = nextPath;
   }
 
   const response = NextResponse.redirect(new URL(destination, request.url), 303);
